@@ -33,3 +33,4 @@ To generate the database from set of texts, use the script `felis.php`. It can b
     php felis.php INPUTDIR OUTPUTDIR
 
 And will read texts from `INPUTDIR` and generate ngams files in `OUTPUTDIR`. 
+The files in `INPUTDIR` are assumed to have names like `LANGUAGE.txt`, e.g. `english.txt`, `german.txt`, `klingon.txt`, etc. 
