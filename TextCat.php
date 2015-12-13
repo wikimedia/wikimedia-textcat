@@ -19,6 +19,12 @@ class TextCat {
 	private $minFreq = 0;
 
 	/**
+	 * Regexp used as word separator
+	 * @var string
+	 */
+	private $wordSeparator = '0-9\s\.';
+
+	/**
 	 * List of language files
 	 * @var string[]
 	 */
@@ -60,7 +66,7 @@ class TextCat {
 	 */
 	public function createLM($text) {
 		$ngram = array();
-		foreach(preg_split('/[0-9\s\.]/', $text) as $word) {
+		foreach(preg_split("/[{$this->wordSeparator}]+/", $text) as $word) {
 			$word = "_".$word."_";
 			$len = strlen($word);
 			for($i=0;$i<$len;$i++) {
@@ -101,7 +107,7 @@ class TextCat {
 		$rang = 1;
 		$ngrams = array();
 		foreach($lines as $line) {
-			if( preg_match("/^([^0-9\s]+)/", $line, $match) ) {
+			if( preg_match("/^([^{$this->wordSeparator}]+)/", $line, $match) ) {
 				$ngrams[ $match[1] ] = $rang++;
 			}
 		}

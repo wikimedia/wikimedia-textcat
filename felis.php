@@ -1,46 +1,23 @@
 <?php
 require_once 'TextCat.php';
 
-$options = getopt('a:d:f:t:u:l:h');
-if(!empty($options['d'])) {
-	$dir = $options['d'];
-} else {
-	$dir = getcwd();
+if($argc != 3) {
+	die("Use $argv[0] INPUTDIR OUTPUTDIR\n");
 }
+if(!file_exists($argv[2])) {
+	mkdir($argv[2], 0755, true);
+}
+$cat = new TextCat($argv[2]);
 
-$cat = new TextCat($dir);
-
-if(!empty($options['t'])) {
-	$cat->setMaxNgrams(intval($options['t']));
+foreach(new DirectoryIterator($argv[1]) as $file) {
+	if(!$file->isFile()) {
+		continue;
+	}
+	$ngrams = $cat->createLM(file_get_contents($file->getPathname()));
+	$out = fopen( $argv[2] . "/" . $file->getBasename(".txt") . ".lm", "w" );
+	foreach($ngrams as $word => $score) {
+		fwrite($out, "$word\t $score\n");
+	}
+	fclose($out);
 }
-if(!empty($options['f'])) {
-	$cat->setMinFreq(intval($options['f']));
-}
-
-$input = isset($options['l']) ? $options['l'] : file_get_contents("php://stdin");
-$result = $cat->classify($input);
-
-if(empty($result)) {
-	echo "No match found.\n";
-	exit(1);
-}
-
-if(!empty($options['u'])) {
-	$max = reset($result) * $options['u'];
-} else {
-	$max = reset($result) * 1.05;
-}
-
-if(!empty($options['a'])) {
-	$top = $options['a'];
-} else {
-	$top = 10;
-}
-$result = array_filter($result, function ($res) use($max) { return $res < $max; });
-if($result && count($result) <= $top) {
-	echo join(" or ", array_keys($result)) . "\n";
-	exit(0);
-} else {
-	echo "Can not determine language.\n";
-	exit(1);
-}
+exit(0);
