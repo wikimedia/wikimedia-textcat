@@ -40,7 +40,7 @@ HELP;
 if(!empty($options['d'])) {
 	$dir = $options['d'];
 } else {
-	$dir = getcwd();
+	$dir = dirname(__FILE__)."/LM";
 }
 
 $cat = new TextCat($dir);
