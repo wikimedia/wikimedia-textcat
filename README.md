@@ -30,6 +30,6 @@ The output would be the list of the languages, e.g.:
 
 To generate the database from set of texts, use the script `felis.php`. It can be run as:
 
-    php felis.php -s inputdir -o outputdir
+    php felis.php INPUTDIR OUTPUTDIR
 
-And will read texts from inputdir and generate ngams files in outputdir. 
+And will read texts from `INPUTDIR` and generate ngams files in `OUTPUTDIR`. 
