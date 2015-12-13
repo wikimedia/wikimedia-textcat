@@ -1,0 +1,11 @@
+{
+    "name": "smalyshev/textcat",
+    "description": "PHP port of the TextCat language guesser utility, see http://odur.let.rug.nl/~vannoord/TextCat/.",
+    "authors": [
+        {
+            "name": "Stanislav Malyshev",
+            "email": "smalyshev@gmail.com"
+        }
+    ],
+    "require": {}
+}
