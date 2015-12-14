@@ -1,4 +1,7 @@
 <?php
+/**
+ * Classify texts using ngrams. See help below for options.
+ */
 require_once 'TextCat.php';
 
 $options = getopt('a:d:f:t:u:l:h');

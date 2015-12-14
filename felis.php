@@ -1,4 +1,10 @@
 <?php
+/**
+ * Generate ngrams data from text files.
+ * Run: php felis.php INPUTDIR OUTPUTDIR
+ * INPUTDIR should contain text files e.g. english.txt
+ * OUTPUTDIR would contain ngrams files e.g. english.lm
+ */
 require_once 'TextCat.php';
 
 if($argc != 3) {

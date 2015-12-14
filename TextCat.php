@@ -109,7 +109,7 @@ class TextCat {
 
 	/**
 	 * Write ngrams to file in PHP format
-	 * @param array $ngrams
+	 * @param int[] $ngrams
 	 * @param string $outfile Output filename
 	 */
 	public function writeLanguageFile($ngrams, $outfile) {
