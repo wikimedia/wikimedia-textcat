@@ -14,10 +14,6 @@ foreach(new DirectoryIterator($argv[1]) as $file) {
 		continue;
 	}
 	$ngrams = $cat->createLM(file_get_contents($file->getPathname()));
-	$out = fopen( $argv[2] . "/" . $file->getBasename(".txt") . ".lm", "w" );
-	foreach($ngrams as $word => $score) {
-		fwrite($out, "$word\t $score\n");
-	}
-	fclose($out);
+	$cat->writeLanguageFile($ngrams, $argv[2] . "/" . $file->getBasename(".txt") . ".lm");
 }
 exit(0);

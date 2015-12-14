@@ -102,16 +102,25 @@ class TextCat {
 	 * @param string $langFile
 	 * @return int[] Language file data
 	 */
-	private function loadLanguageFile($langFile) {
-		$lines = file($langFile, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
-		$rang = 1;
-		$ngrams = array();
-		foreach($lines as $line) {
-			if( preg_match("/^([^{$this->wordSeparator}]+)/", $line, $match) ) {
-				$ngrams[ $match[1] ] = $rang++;
-			}
-		}
-		return $ngrams;
+	public function loadLanguageFile($langFile) {
+		include $langFile;
+		return $ranks;
+	}
+
+	/**
+	 * Write ngrams to file in PHP format
+	 * @param array $ngrams
+	 * @param string $outfile Output filename
+	 */
+	public function writeLanguageFile($ngrams, $outfile) {
+		$out = fopen($outfile, "w");
+		// write original array as "$ngrams"
+		fwrite($out, '<?php $ngrams = ' . var_export($ngrams, true) . ";\n");
+		// write reduced array as "$ranks"
+		$rank = 1;
+		$ranks = array_map(function ($x) use(&$rank) { return $rank++; }, $ngrams);
+		fwrite($out, '$ranks = ' . var_export($ranks, true) . ";\n");
+		fclose($out);
 	}
 
 	/**
