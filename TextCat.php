@@ -104,6 +104,7 @@ class TextCat {
 	 */
 	public function loadLanguageFile($langFile) {
 		include $langFile;
+		array_splice($ranks, $this->maxNgrams);
 		return $ranks;
 	}
 
