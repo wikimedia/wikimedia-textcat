@@ -72,7 +72,7 @@ if(!empty($options['u'])) {
 if(!empty($options['a'])) {
 	$top = $options['a'];
 } else {
-	$top = 10;
+	$top = 100;
 }
 $result = array_filter($result, function ($res) use($max) { return $res < $max; });
 if($result && count($result) <= $top) {

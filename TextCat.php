@@ -10,7 +10,7 @@ class TextCat {
 	 * Number of ngrams to be used.
 	 * @var int
 	 */
-	private $maxNgrams = 400;
+	private $maxNgrams = 500;
 
 	/**
 	 * Minimum frequency of ngram to be counted.
@@ -68,22 +68,22 @@ class TextCat {
 		$ngram = array();
 		foreach(preg_split("/[{$this->wordSeparator}]+/", $text) as $word) {
 			$word = "_".$word."_";
-			$len = strlen($word);
+			$len = mb_strlen($word, "UTF-8");
 			for($i=0;$i<$len;$i++) {
 				$rlen = $len - $i;
 				if($rlen > 4) {
-					@$ngram[substr($word,$i,5)]++;
+					@$ngram[mb_substr($word, $i, 5, "UTF-8")]++;
 				}
 				if($rlen > 3) {
-					@$ngram[substr($word,$i,4)]++;
+					@$ngram[mb_substr($word, $i, 4, "UTF-8")]++;
 				}
 				if($rlen > 2) {
-					@$ngram[substr($word,$i,3)]++;
+					@$ngram[mb_substr($word, $i, 3, "UTF-8")]++;
 				}
 				if($rlen > 1) {
-					@$ngram[substr($word,$i,2)]++;
+					@$ngram[mb_substr($word, $i, 2, "UTF-8")]++;
 				}
-				@$ngram[$word[$i]]++;
+				@$ngram[mb_substr($word, $i, 1, "UTF-8")]++;
 			}
 		}
 		if($this->minFreq) {
