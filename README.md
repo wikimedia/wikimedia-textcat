@@ -11,6 +11,8 @@ Please see http://odur.let.rug.nl/~vannoord/TextCat/ for the original one.
 ## Contents
 
 The package contains the classifier class itself and two tools - for classifying the texts and for generating the ngram database. 
+The code now assumes the text encoding is UTF-8, since it's easier to extract ngrams this way.
+Also, everybody uses UTF-8 now and I, for one, welcome our new UTF-8-encoded overlords.
 
 ### Classifier
 
