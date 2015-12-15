@@ -68,6 +68,9 @@ class TextCat {
 	public function createLM($text, $maxNgrams) {
 		$ngram = array();
 		foreach(preg_split("/[{$this->wordSeparator}]+/", $text) as $word) {
+			if(empty($word)) {
+				continue;
+			}
 			$word = "_".$word."_";
 			$len = mb_strlen($word, "UTF-8");
 			for($i=0;$i<$len;$i++) {
