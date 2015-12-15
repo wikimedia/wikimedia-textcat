@@ -4,7 +4,7 @@
  */
 require_once 'TextCat.php';
 
-$options = getopt('a:d:f:t:u:l:h');
+$options = getopt('a:c:d:f:t:u:l:h');
 
 if(isset($options['h'])) {
 	$help = <<<HELP
