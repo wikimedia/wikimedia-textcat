@@ -7,5 +7,6 @@
             "email": "smalyshev@gmail.com"
         }
     ],
+    "license": "LGPL-2.1",
     "require": { "php": ">=5.3.0" }
 }
