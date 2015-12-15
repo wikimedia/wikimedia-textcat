@@ -26,7 +26,7 @@ or
 
 The output would be the list of the languages, e.g.:
 
-    french or romanian
+    fr or ro
 
 ### Generator
 
