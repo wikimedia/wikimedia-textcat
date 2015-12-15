@@ -2,7 +2,7 @@
 /**
  * Classify texts using ngrams. See help below for options.
  */
-require_once 'TextCat.php';
+require_once __DIR__.'/TextCat.php';
 
 $options = getopt('a:c:d:f:t:u:l:h');
 

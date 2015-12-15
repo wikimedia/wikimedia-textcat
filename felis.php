@@ -5,7 +5,7 @@
  * INPUTDIR should contain text files e.g. english.txt
  * OUTPUTDIR would contain ngrams files e.g. english.lm
  */
-require_once 'TextCat.php';
+require_once __DIR__.'/TextCat.php';
 // TODO: add option to control model ngram count
 $maxNgrams = 4000;
 
