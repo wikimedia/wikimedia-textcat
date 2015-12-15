@@ -10,7 +10,7 @@ class TextCat {
 	 * Number of ngrams to be used.
 	 * @var int
 	 */
-	private $maxNgrams = 500;
+	private $maxNgrams = 3000;
 
 	/**
 	 * Minimum frequency of ngram to be counted.
@@ -62,9 +62,10 @@ class TextCat {
 	/**
 	 * Create ngrams list for text.
 	 * @param string $text
+	 * @param int $maxNgrams How many ngrams to use.
 	 * @return int[]
 	 */
-	public function createLM($text) {
+	public function createLM($text, $maxNgrams) {
 		$ngram = array();
 		foreach(preg_split("/[{$this->wordSeparator}]+/", $text) as $word) {
 			$word = "_".$word."_";
@@ -91,8 +92,8 @@ class TextCat {
 			$ngram = array_filter($ngram, function ($v) use($min) { return $v > $min; });
 		}
 		arsort($ngram);
-		if(count($ngram) > $this->maxNgrams) {
-			array_splice($ngram, $this->maxNgrams);
+		if(count($ngram) > $maxNgrams) {
+			array_splice($ngram, $maxNgrams);
 		}
 		return $ngram;
 	}
@@ -127,12 +128,21 @@ class TextCat {
 	/**
 	 * Classify text.
 	 * @param string $text
+	 * @param string[] $candidates List of candidate languages.
 	 * @return int[] Array with keys of language names and values of score.
 	 * 				 Sorted by ascending score, with first result being the best.
 	 */
-	public function classify($text) {
-		$inputgrams = array_keys($this->createLM($text));
+	public function classify($text, $candidates = null) {
+		$inputgrams = array_keys($this->createLM($text, $this->maxNgrams));
+		if($candidates) {
+			// flip for more efficient lookups
+			$candidates = array_flip($candidates);
+		}
+		$results = array();
 		foreach($this->langFiles as $language => $langFile) {
+			if($candidates && !isset($candidates[$language])) {
+				continue;
+			}
 			$ngrams = $this->loadLanguageFile($langFile);
 			$p = 0;
 			foreach($inputgrams as $i => $ingram) {

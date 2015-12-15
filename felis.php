@@ -6,6 +6,8 @@
  * OUTPUTDIR would contain ngrams files e.g. english.lm
  */
 require_once 'TextCat.php';
+// TODO: add option to control model ngram count
+$maxNgrams = 4000;
 
 if($argc != 3) {
 	die("Use $argv[0] INPUTDIR OUTPUTDIR\n");
@@ -19,7 +21,7 @@ foreach(new DirectoryIterator($argv[1]) as $file) {
 	if(!$file->isFile()) {
 		continue;
 	}
-	$ngrams = $cat->createLM(file_get_contents($file->getPathname()));
+	$ngrams = $cat->createLM(file_get_contents($file->getPathname()), $maxNgrams);
 	$cat->writeLanguageFile($ngrams, $argv[2] . "/" . $file->getBasename(".txt") . ".lm");
 }
 exit(0);
