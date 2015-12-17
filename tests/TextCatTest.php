@@ -91,10 +91,12 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 	public function testFileLines($textFile)
 	{
 		$lines = file($textFile);
+		$line = 5;
 		do {
-			$randLine = trim($lines[array_rand($lines)]);
-		} while(empty($randLine));
-		$detect = $this->testcat->classify($randLine);
+			$testLine = trim($lines[$line]);
+			$line++;
+		} while(empty($testLine));
+		$detect = $this->testcat->classify($testLine);
 		reset($detect);
 		$this->assertEquals(basename($textFile, ".txt"), key($detect));
 	}
