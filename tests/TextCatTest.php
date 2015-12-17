@@ -12,6 +12,7 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 	public function setUp()
 	{
 		$this->cat = new TextCat(__DIR__."/../LM");
+		$this->testcat = new TextCat(__DIR__."/data/Models");
 	}
 
 	public function testCreateLM()
@@ -80,5 +81,21 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 				$ngrams,
 				$this->cat->createLM(file_get_contents($textFile), 4000)
 		);
+	}
+
+	/**
+	 * @dataProvider getTexts
+	 * @param string $text
+	 * @param string $lm
+	 */
+	public function testFileLines($textFile)
+	{
+		$lines = file($textFile);
+		do {
+			$randLine = trim($lines[array_rand($lines)]);
+		} while(empty($randLine));
+		$detect = $this->testcat->classify($randLine);
+		reset($detect);
+		$this->assertEquals(basename($textFile, ".txt"), key($detect));
 	}
 }
