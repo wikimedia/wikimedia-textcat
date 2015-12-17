@@ -53,4 +53,32 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 		);
 		$this->assertEquals($result, $lm);
 	}
+
+	public function getTexts()
+	{
+		$indir = __DIR__."/data/ShortTexts";
+		$outdir = __DIR__."/data/Models";
+		$data = array();
+		foreach(new DirectoryIterator($indir) as $file) {
+			if(!$file->isFile() || $file->getExtension() != "txt") {
+				continue;
+			}
+			$data[] = array($file->getPathname(), $outdir . "/" . $file->getBasename(".txt") . ".lm");
+		}
+		return $data;
+	}
+
+	/**
+	 * @dataProvider getTexts
+	 * @param string $text
+	 * @param string $lm
+	 */
+	public function testCreateFromTexts($textFile, $lmFile)
+	{
+		include $lmFile;
+		$this->assertEquals(
+				$ngrams,
+				$this->cat->createLM(file_get_contents($textFile), 4000)
+		);
+	}
 }

@@ -22,7 +22,7 @@ class TextCat {
 	 * Regexp used as word separator
 	 * @var string
 	 */
-	private $wordSeparator = '0-9\s\.';
+	private $wordSeparator = '0-9\s\.\(\)';
 
 	/**
 	 * List of language files
@@ -67,7 +67,7 @@ class TextCat {
 	 */
 	public function createLM($text, $maxNgrams) {
 		$ngram = array();
-		foreach(preg_split("/[{$this->wordSeparator}]+/", $text) as $word) {
+		foreach(preg_split("/[{$this->wordSeparator}]+/u", $text) as $word) {
 			if(empty($word)) {
 				continue;
 			}
