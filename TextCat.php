@@ -47,7 +47,10 @@ class TextCat {
 	/**
 	 * @param string $dir
 	 */
-	public function __construct($dir) {
+	public function __construct($dir = null) {
+		if(empty($dir)) {
+			$dir = __DIR__."/LM";
+		}
 		$this->dir = $dir;
 		foreach(new DirectoryIterator($dir) as $file) {
 			if(!$file->isFile()) {
