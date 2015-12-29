@@ -30,12 +30,18 @@ The output would be the list of the languages, e.g.:
 
 ### Generator
 
-To generate the database from set of texts, use the script `felis.php`. It can be run as:
+To generate the language model database from set of texts, use the script `felis.php`. It can be run as:
 
     php felis.php INPUTDIR OUTPUTDIR
 
 And will read texts from `INPUTDIR` and generate ngams files in `OUTPUTDIR`. 
 The files in `INPUTDIR` are assumed to have names like `LANGUAGE.txt`, e.g. `english.txt`, `german.txt`, `klingon.txt`, etc. 
 
-[![Build Status](https://travis-ci.org/smalyshev/textcat.svg?branch=master)](https://travis-ci.org/smalyshev/textcat)
+## Models
 
+The package comes with default language model database in th `LM` directory. However, the model performance will depend a lot
+on the text corpus it will be applied to, as well as specific modifications - e.g. capitalization, diacritics, etc.
+Currently the library does not modify or normalize neither training texts nor cassified texts in any way,
+so usage of custom language models may be recommended for specific applications.
+
+[![Build Status](https://travis-ci.org/smalyshev/textcat.svg?branch=master)](https://travis-ci.org/smalyshev/textcat)
