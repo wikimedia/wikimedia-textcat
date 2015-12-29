@@ -1,10 +1,10 @@
 {
-    "name": "smalyshev/textcat",
+    "name": "wikimedia/textcat",
     "description": "PHP port of the TextCat language guesser utility, see http://odur.let.rug.nl/~vannoord/TextCat/.",
     "authors": [
         {
             "name": "Stanislav Malyshev",
-            "email": "smalyshev@gmail.com"
+            "email": "smalyshev@wikimedia.org"
         }
     ],
     "license": "LGPL-2.1",
