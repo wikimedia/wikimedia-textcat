@@ -1,0 +1,9 @@
+<phpunit colors="true"
+	beStrictAboutTestsThatDoNotTestAnything="true"
+	beStrictAboutOutputDuringTests="true">
+	<testsuites>
+		<testsuite name="TextCat Tests">
+			<directory>./test</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
