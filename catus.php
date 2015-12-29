@@ -4,9 +4,9 @@
  */
 require_once __DIR__.'/TextCat.php';
 
-$options = getopt('a:c:d:f:t:u:l:h');
+$options = getopt( 'a:c:d:f:t:u:l:h' );
 
-if(isset($options['h'])) {
+if ( isset( $options['h'] ) ) {
 	$help = <<<HELP
 {$argv[0]} [-d Dir] [-a Int] [-f Int] [-l Text] [-t Int] [-u Float]
 
@@ -37,52 +37,54 @@ if(isset($options['h'])) {
 
 HELP;
 	echo $help;
-	exit(0);
+	exit( 0 );
 }
 
-if(!empty($options['d'])) {
+if ( !empty( $options['d'] ) ) {
 	$dir = $options['d'];
 } else {
-	$dir = dirname(__FILE__)."/LM";
+	$dir = __DIR__."/LM";
 }
 
-$cat = new TextCat($dir);
+$cat = new TextCat( $dir );
 
-if(!empty($options['t'])) {
-	$cat->setMaxNgrams(intval($options['t']));
+if ( !empty( $options['t'] ) ) {
+	$cat->setMaxNgrams( intval( $options['t'] ) );
 }
-if(!empty($options['f'])) {
-	$cat->setMinFreq(intval($options['f']));
+if ( !empty( $options['f'] ) ) {
+	$cat->setMinFreq( intval( $options['f'] ) );
 }
 
-$input = isset($options['l']) ? $options['l'] : file_get_contents("php://stdin");
-if(!empty($options['c'])) {
-	$result = $cat->classify($input, explode(",", $options['c']));
+$input = isset( $options['l'] ) ? $options['l'] : file_get_contents( "php://stdin" );
+if ( !empty( $options['c'] ) ) {
+	$result = $cat->classify( $input, explode( ",", $options['c'] ) );
 } else {
-	$result = $cat->classify($input);
+	$result = $cat->classify( $input );
 }
 
-if(empty($result)) {
+if ( empty( $result ) ) {
 	echo "No match found.\n";
-	exit(1);
+	exit( 1 );
 }
 
-if(!empty($options['u'])) {
-	$max = reset($result) * $options['u'];
+if ( !empty( $options['u'] ) ) {
+	$max = reset( $result ) * $options['u'];
 } else {
-	$max = reset($result) * 1.05;
+	$max = reset( $result ) * 1.05;
 }
 
-if(!empty($options['a'])) {
+if ( !empty( $options['a'] ) ) {
 	$top = $options['a'];
 } else {
 	$top = 10;
 }
-$result = array_filter($result, function ($res) use($max) { return $res < $max; });
-if($result && count($result) <= $top) {
-	echo join(" or ", array_keys($result)) . "\n";
-	exit(0);
+$result = array_filter( $result, function ( $res ) use( $max ) { return $res < $max;
+
+} );
+if ( $result && count( $result ) <= $top ) {
+	echo join( " or ", array_keys( $result ) ) . "\n";
+	exit( 0 );
 } else {
 	echo "Can not determine language.\n";
-	exit(1);
+	exit( 1 );
 }

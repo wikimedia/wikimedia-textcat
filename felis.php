@@ -9,19 +9,19 @@ require_once __DIR__.'/TextCat.php';
 // TODO: add option to control model ngram count
 $maxNgrams = 4000;
 
-if($argc != 3) {
-	die("Use $argv[0] INPUTDIR OUTPUTDIR\n");
+if ( $argc != 3 ) {
+	die( "Use $argv[0] INPUTDIR OUTPUTDIR\n" );
 }
-if(!file_exists($argv[2])) {
-	mkdir($argv[2], 0755, true);
+if ( !file_exists( $argv[2] ) ) {
+	mkdir( $argv[2], 0755, true );
 }
-$cat = new TextCat($argv[2]);
+$cat = new TextCat( $argv[2] );
 
-foreach(new DirectoryIterator($argv[1]) as $file) {
-	if(!$file->isFile()) {
+foreach ( new DirectoryIterator( $argv[1] ) as $file ) {
+	if ( !$file->isFile() ) {
 		continue;
 	}
-	$ngrams = $cat->createLM(file_get_contents($file->getPathname()), $maxNgrams);
-	$cat->writeLanguageFile($ngrams, $argv[2] . "/" . $file->getBasename(".txt") . ".lm");
+	$ngrams = $cat->createLM( file_get_contents( $file->getPathname() ), $maxNgrams );
+	$cat->writeLanguageFile( $ngrams, $argv[2] . "/" . $file->getBasename( ".txt" ) . ".lm" );
 }
-exit(0);
+exit( 0 );
