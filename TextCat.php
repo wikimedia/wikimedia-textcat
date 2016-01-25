@@ -22,7 +22,7 @@ class TextCat {
 	 * Regexp used as word separator
 	 * @var string
 	 */
-	private $wordSeparator = '0-9\s\.\(\)';
+	private $wordSeparator = '0-9\s\(\)';
 
 	/**
 	 * List of language files
