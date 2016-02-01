@@ -14,6 +14,8 @@ class TextCat {
 
 	/**
 	 * Minimum frequency of ngram to be counted.
+	 * ( For language model generation set this
+	 *   >0 to decrease CPU and memory reqs. )
 	 * @var int
 	 */
 	private $minFreq = 0;

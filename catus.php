@@ -11,7 +11,7 @@ if ( isset( $options['h'] ) ) {
 {$argv[0]} [-d Dir] [-a Int] [-f Int] [-l Text] [-t Int] [-u Float]
 
     -a NUM  the program returns the best-scoring language together
-            with all languages which are N times worse (set by option -u).
+            with all languages which are <N times worse (set by option -u).
             If the number of languages to be printed is larger than the value
             of this option then no language is returned, but
             instead a message that the input is of an unknown language is
@@ -21,7 +21,7 @@ if ( isset( $options['h'] ) ) {
             considered for detection.
     -d DIR  indicates in which directory the language models are
             located (files ending in .lm). Currently only a single
-            directory is supported. Default: current directory.
+            directory is supported. Default: ./LM .
     -f NUM  Before sorting is performed the Ngrams which occur this number
             of times or less are removed. This can be used to speed up
             the program for longer inputs. For short inputs you should use
@@ -82,9 +82,9 @@ $result = array_filter( $result, function ( $res ) use( $max ) { return $res < $
 
 } );
 if ( $result && count( $result ) <= $top ) {
-	echo join( " or ", array_keys( $result ) ) . "\n";
+	echo join( " OR ", array_keys( $result ) ) . "\n";
 	exit( 0 );
 } else {
-	echo "Can not determine language.\n";
+	echo "Cannot determine language.\n";
 	exit( 1 );
 }
