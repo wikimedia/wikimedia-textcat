@@ -47,19 +47,24 @@ class TextCat {
 	}
 
 	/**
-	 * @param string $dir
+	 * @param string|array $dirs
 	 */
-	public function __construct( $dir = null ) {
-		if ( empty( $dir ) ) {
-			$dir = __DIR__."/LM";
+	public function __construct( $dirs = array() ) {
+		if ( empty( $dirs ) ) {
+			$dirs = array( __DIR__."/LM" );
 		}
-		$this->dir = $dir;
-		foreach ( new DirectoryIterator( $dir ) as $file ) {
-			if ( !$file->isFile() ) {
-				continue;
-			}
-			if ( $file->getExtension() == "lm" ) {
-				$this->langFiles[$file->getBasename( ".lm" )] = $file->getPathname();
+		if ( !is_array( $dirs ) ) {
+			$dirs = array( $dirs );
+		}
+		foreach ( $dirs as $dir ) {
+			foreach ( new DirectoryIterator( $dir ) as $file ) {
+				if ( !$file->isFile() ) {
+					continue;
+				}
+				if ( $file->getExtension() == "lm" &&
+				     !isset( $this->langFiles[$file->getBasename( ".lm" )] ) ) {
+					$this->langFiles[$file->getBasename( ".lm" )] = $file->getPathname();
+				}
 			}
 		}
 	}

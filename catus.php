@@ -8,7 +8,7 @@ $options = getopt( 'a:c:d:f:t:u:l:h' );
 
 if ( isset( $options['h'] ) ) {
 	$help = <<<HELP
-{$argv[0]} [-d Dir] [-a Int] [-f Int] [-l Text] [-t Int] [-u Float]
+{$argv[0]} [-d Dir] [-c Lang] [-a Int] [-f Int] [-l Text] [-t Int] [-u Float]
 
     -a NUM  the program returns the best-scoring language together
             with all languages which are <N times worse (set by option -u).
@@ -19,9 +19,10 @@ if ( isset( $options['h'] ) ) {
     -c LANG,LANG,...
             lists the candidate languages. Only languages listed will be
             considered for detection.
-    -d DIR  indicates in which directory the language models are
-            located (files ending in .lm). Currently only a single
-            directory is supported. Default: ./LM .
+    -d DIR,DIR,...
+            indicates in which directory the language models are
+            located (files ending in .lm). Multiple directories can be
+            separated by a comma, and will be used in order.  Default: ./LM .
     -f NUM  Before sorting is performed the Ngrams which occur this number
             of times or less are removed. This can be used to speed up
             the program for longer inputs. For short inputs you should use
@@ -41,12 +42,12 @@ HELP;
 }
 
 if ( !empty( $options['d'] ) ) {
-	$dir = $options['d'];
+	$dirs = explode( ",", $options['d'] );
 } else {
-	$dir = __DIR__."/LM";
+	$dirs = array( __DIR__."/LM" );
 }
 
-$cat = new TextCat( $dir );
+$cat = new TextCat( $dirs );
 
 if ( !empty( $options['t'] ) ) {
 	$cat->setMaxNgrams( intval( $options['t'] ) );
