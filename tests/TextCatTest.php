@@ -137,4 +137,41 @@ class TextCatTest extends PHPUnit_Framework_TestCase
         $this->assertEquals( array_keys( $this->multicat2->classify( $testLine, $res2 ) ),
 							 array_values( $res2 ) );
     }
+
+    public function minInputLengthData()
+    {
+        return array(
+          array( 'eso es español',
+				array( 'spanish', 'catalan', 'portuguese' ), null, ),
+          array( 'this is english',
+				array( 'english', 'german' ), null, ),
+          array( 'c\'est français',
+				array( 'french', 'portuguese', 'romanian', 'catalan' ), null, ),
+          // numbers and spaces get stripped, so result should be an empty array
+          // regardless of min input length
+          array( '56 8 49564     83 9',
+				array( 'french', 'portuguese', 'romanian', 'catalan' ), array(), ),
+        );
+    }
+
+    /**
+     * @dataProvider minInputLengthData
+	 * @param string $testLine
+	 * @param array $lang
+	 * @param array $res
+     */
+    public function testMinInputLength( $testLine, $lang, $res )
+    {
+		if ( !isset( $res ) ) {
+			$res = $lang;
+		}
+		# should get results when min input len is 0
+		$minLength = $this->testcat->setMinInputLength(0);
+		$this->assertEquals( array_keys( $this->testcat->classify( $testLine, $res ) ),
+							 array_values( $res ) );
+        # should get no results when min input len is more than the length of the string
+        $minLength = $this->testcat->setMinInputLength(mb_strlen($testLine) + 1);
+        $this->assertEquals( array_keys( $this->testcat->classify( $testLine, $res ) ),
+                             array() );
+    }
 }
