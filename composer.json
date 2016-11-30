@@ -3,6 +3,10 @@
     "description": "PHP port of the TextCat language guesser utility, see http://odur.let.rug.nl/~vannoord/TextCat/.",
     "authors": [
         {
+            "name": "Trey Jones",
+            "email": "tjones@wikimedia.org"
+        },
+        {
             "name": "Stanislav Malyshev",
             "email": "smalyshev@wikimedia.org"
         }
