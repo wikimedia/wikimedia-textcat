@@ -33,6 +33,13 @@ class TextCat {
 	private $langFiles = array();
 
 	/**
+	 * Minimum Input Length to be considered for
+	 * classification
+	 * @var int
+	 */
+	private $minInputLength = 0;
+
+	/**
 	 * @param int $maxNgrams
 	 */
 	public function setMaxNgrams( $maxNgrams ) {
@@ -44,6 +51,13 @@ class TextCat {
 	 */
 	public function setMinFreq( $minFreq ) {
 		$this->minFreq = $minFreq;
+	}
+
+	/**
+	 * @param int $minInputLength
+	 */
+	public function setMinInputLength( $minInputLength ) {
+		$this->minInputLength = $minInputLength;
 	}
 
 	/**
@@ -155,12 +169,19 @@ class TextCat {
 	 * 				 Sorted by ascending score, with first result being the best.
 	 */
 	public function classify( $text, $candidates = null ) {
+		$results = array();
+
+		// strip non-word characters before checking for min length, don't assess empty strings
+		$wordLength = mb_strlen( preg_replace( "/[{$this->wordSeparator}]+/", "", $text ) );
+		if ( $wordLength < $this->minInputLength || $wordLength == 0 ) {
+			return $results;
+		}
+
 		$inputgrams = array_keys( $this->createLM( $text, $this->maxNgrams ) );
 		if ( $candidates ) {
 			// flip for more efficient lookups
 			$candidates = array_flip( $candidates );
 		}
-		$results = array();
 		foreach ( $this->langFiles as $language => $langFile ) {
 			if ( $candidates && !isset( $candidates[$language] ) ) {
 				continue;

@@ -4,35 +4,37 @@
  */
 require_once __DIR__.'/TextCat.php';
 
-$options = getopt( 'a:c:d:f:t:u:l:h' );
+$options = getopt( 'a:c:d:f:j:l:t:u:h' );
 
 if ( isset( $options['h'] ) ) {
 	$help = <<<HELP
-{$argv[0]} [-d Dir] [-c Lang] [-a Int] [-f Int] [-l Text] [-t Int] [-u Float]
+{$argv[0]} [-d Dir] [-c Lang] [-a Int] [-f Int] [-j Int] [-l Text] [-t Int] [-u Float]
 
-    -a NUM  the program returns the best-scoring language together
+    -a NUM  The program returns the best-scoring language together
             with all languages which are <N times worse (set by option -u).
             If the number of languages to be printed is larger than the value
             of this option then no language is returned, but
             instead a message that the input is of an unknown language is
             printed. Default: 10.
     -c LANG,LANG,...
-            lists the candidate languages. Only languages listed will be
+            Lists the candidate languages. Only languages listed will be
             considered for detection.
     -d DIR,DIR,...
-            indicates in which directory the language models are
+            Indicates in which directory the language models are
             located (files ending in .lm). Multiple directories can be
             separated by a comma, and will be used in order.  Default: ./LM .
     -f NUM  Before sorting is performed the Ngrams which occur this number
             of times or less are removed. This can be used to speed up
             the program for longer inputs. For short inputs you should use
             the default or -f 0. Default: 0.
-    -l TEXT indicates that input is given as an argument on the command line,
+    -j NUM  Only attempt classification if the input string is at least this
+            many characters. Default: 0.
+    -l TEXT Indicates that input is given as an argument on the command line,
             e.g. {$argv[0]} -l "this is english text"
             If this option is not given, the input is stdin.
-    -t NUM  indicates the topmost number of ngrams that should be used.
+    -t NUM  Indicates the topmost number of ngrams that should be used.
             Default: 3000
-    -u NUM  determines how much worse result must be in order not to be
+    -u NUM  Determines how much worse result must be in order not to be
             mentioned as an alternative. Typical value: 1.05 or 1.1.
             Default: 1.05.
 
@@ -54,6 +56,9 @@ if ( !empty( $options['t'] ) ) {
 }
 if ( !empty( $options['f'] ) ) {
 	$cat->setMinFreq( intval( $options['f'] ) );
+}
+if ( isset( $options['j'] ) ) {
+	$cat->setMinInputLength( intval( $options['j'] ) );
 }
 
 $input = isset( $options['l'] ) ? $options['l'] : file_get_contents( "php://stdin" );
