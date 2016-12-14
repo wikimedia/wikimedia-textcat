@@ -6,6 +6,17 @@
  */
 class TextCat {
 
+	const STATUSTOOSHORT = 'Input is too short.';
+	const STATUSNOMATCH = 'No match found.';
+	const STATUSAMBIGUOUS = 'Cannot determine language.';
+
+	/**
+	 * Minimum input length to be considered for
+	 * classification
+	 * @var string
+	 */
+	private $resultStatus = '';
+
 	/**
 	 * Number of ngrams to be used.
 	 * @var int
@@ -33,11 +44,34 @@ class TextCat {
 	private $langFiles = array();
 
 	/**
-	 * Minimum Input Length to be considered for
+	 * Minimum input length to be considered for
 	 * classification
 	 * @var int
 	 */
 	private $minInputLength = 0;
+
+	/**
+	 * Maximum ratio of the score between a given
+	 * candidate and the best candidate for the
+	 * given candidate to be considered an alternative.
+	 * @var float
+	 */
+	private $resultsRatio = 1.05;
+
+	/**
+	 * Maximum number of languages to return, within
+	 * the resultsRatio. If there are more, the result
+	 * is too ambiguous.
+	 * @var int
+	 */
+	private $maxReturnedLanguages = 10;
+
+	/**
+	 * @param
+	 */
+	public function getResultStatus() {
+		return $this->resultStatus;
+	}
 
 	/**
 	 * @param int $maxNgrams
@@ -58,6 +92,27 @@ class TextCat {
 	 */
 	public function setMinInputLength( $minInputLength ) {
 		$this->minInputLength = $minInputLength;
+	}
+
+	/**
+	 * @param float $resultsRatio
+	 */
+	public function setResultsRatio( $resultsRatio ) {
+		$this->resultsRatio = $resultsRatio;
+	}
+
+	/**
+	 * @param int $maxReturnedLanguages
+	 */
+	public function setMaxReturnedLanguages( $maxReturnedLanguages ) {
+		$this->maxReturnedLanguages = $maxReturnedLanguages;
+	}
+
+	/**
+	 * @param string $wordSeparator
+	 */
+	public function setWordSeparator( $wordSeparator ) {
+		$this->wordSeparator = $wordSeparator;
 	}
 
 	/**
@@ -170,10 +225,12 @@ class TextCat {
 	 */
 	public function classify( $text, $candidates = null ) {
 		$results = array();
+		$this->resultStatus = '';
 
 		// strip non-word characters before checking for min length, don't assess empty strings
 		$wordLength = mb_strlen( preg_replace( "/[{$this->wordSeparator}]+/", "", $text ) );
 		if ( $wordLength < $this->minInputLength || $wordLength == 0 ) {
+			$this->resultStatus = self::STATUSTOOSHORT;
 			return $results;
 		}
 
@@ -197,7 +254,25 @@ class TextCat {
 			}
 			$results[$language] = $p;
 		}
+
 		asort( $results );
+
+		// ignore any item that scores higher than best * resultsRatio
+		$max = reset( $results ) * $this->resultsRatio;
+		$results = array_filter( $results, function ( $res ) use ( $max ) { return $res <= $max;
+		} );
+
+		// if more than maxReturnedLanguages remain, the result is too ambiguous, so bail
+		if ( count( $results ) > $this->maxReturnedLanguages ) {
+			$this->resultStatus = self::STATUSAMBIGUOUS;
+			return array();
+		}
+
+		if ( count( $results ) == 0 ) {
+			$this->resultStatus = self::STATUSNOMATCH;
+			return $results;
+		}
+
 		return $results;
 	}
 }

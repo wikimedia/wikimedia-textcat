@@ -4,18 +4,19 @@
  */
 require_once __DIR__.'/TextCat.php';
 
-$options = getopt( 'a:c:d:f:j:l:t:u:h' );
+$options = getopt( 'a:c:d:f:j:l:m:u:w:h' );
 
 if ( isset( $options['h'] ) ) {
 	$help = <<<HELP
-{$argv[0]} [-d Dir] [-c Lang] [-a Int] [-f Int] [-j Int] [-l Text] [-t Int] [-u Float]
+{$argv[0]} [-d Dir] [-c Lang] [-a Int] [-u Float] [-l Text]
+           [-f Int] [-j Int] [-m Int] [-w String]
 
     -a NUM  The program returns the best-scoring language together
             with all languages which are <N times worse (set by option -u).
             If the number of languages to be printed is larger than the value
-            of this option then no language is returned, but
-            instead a message that the input is of an unknown language is
-            printed. Default: 10.
+            of this option then no language is returned, but instead a
+            message that the input is of an unknown language is printed.
+            Default: 10.
     -c LANG,LANG,...
             Lists the candidate languages. Only languages listed will be
             considered for detection.
@@ -32,11 +33,13 @@ if ( isset( $options['h'] ) ) {
     -l TEXT Indicates that input is given as an argument on the command line,
             e.g. {$argv[0]} -l "this is english text"
             If this option is not given, the input is stdin.
-    -t NUM  Indicates the topmost number of ngrams that should be used.
+    -m NUM  Indicates the topmost number of ngrams that should be used.
             Default: 3000
     -u NUM  Determines how much worse result must be in order not to be
             mentioned as an alternative. Typical value: 1.05 or 1.1.
             Default: 1.05.
+    -w STRING
+            Regex for non-word characters. Default: '0-9\s\(\)'
 
 HELP;
 	echo $help;
@@ -51,8 +54,8 @@ if ( !empty( $options['d'] ) ) {
 
 $cat = new TextCat( $dirs );
 
-if ( !empty( $options['t'] ) ) {
-	$cat->setMaxNgrams( intval( $options['t'] ) );
+if ( !empty( $options['m'] ) ) {
+	$cat->setMaxNgrams( intval( $options['m'] ) );
 }
 if ( !empty( $options['f'] ) ) {
 	$cat->setMinFreq( intval( $options['f'] ) );
@@ -60,6 +63,16 @@ if ( !empty( $options['f'] ) ) {
 if ( isset( $options['j'] ) ) {
 	$cat->setMinInputLength( intval( $options['j'] ) );
 }
+if ( !empty( $options['u'] ) ) {
+	$cat->setResultsRatio( floatval( $options['u'] ) );
+}
+if ( isset( $options['a'] ) ) {
+	$cat->setMaxReturnedLanguages( intval( $options['a'] ) );
+}
+if ( isset( $options['w'] ) ) {
+	$cat->setWordSeparator( $options['w'] );
+}
+
 
 $input = isset( $options['l'] ) ? $options['l'] : file_get_contents( "php://stdin" );
 if ( !empty( $options['c'] ) ) {
@@ -69,28 +82,9 @@ if ( !empty( $options['c'] ) ) {
 }
 
 if ( empty( $result ) ) {
-	echo "No match found.\n";
+	echo $cat->getResultStatus() . "\n";
 	exit( 1 );
 }
 
-if ( !empty( $options['u'] ) ) {
-	$max = reset( $result ) * $options['u'];
-} else {
-	$max = reset( $result ) * 1.05;
-}
-
-if ( !empty( $options['a'] ) ) {
-	$top = $options['a'];
-} else {
-	$top = 10;
-}
-$result = array_filter( $result, function ( $res ) use( $max ) { return $res < $max;
-
-} );
-if ( $result && count( $result ) <= $top ) {
-	echo join( " OR ", array_keys( $result ) ) . "\n";
-	exit( 0 );
-} else {
-	echo "Cannot determine language.\n";
-	exit( 1 );
-}
+echo join( " OR ", array_keys( $result ) ) . "\n";
+exit( 0 );
