@@ -67,6 +67,15 @@ class TextCat {
 	private $maxReturnedLanguages = 10;
 
 	/**
+	 * Maximum proportion of maximum score allowed.
+	 * Compare score to worst possible score, and if
+	 * it is too close, consider it not worth reporting.
+	 * @var float
+	 */
+	private $maxProportion = 1.00;
+
+
+	/**
 	 * @param
 	 */
 	public function getResultStatus() {
@@ -106,6 +115,13 @@ class TextCat {
 	 */
 	public function setMaxReturnedLanguages( $maxReturnedLanguages ) {
 		$this->maxReturnedLanguages = $maxReturnedLanguages;
+	}
+
+	/**
+	 * @param float $maxProportion
+	 */
+	public function setMaxProportion( $maxProportion ) {
+		$this->maxProportion = $maxProportion;
 	}
 
 	/**
@@ -267,6 +283,11 @@ class TextCat {
 			$this->resultStatus = self::STATUSAMBIGUOUS;
 			return array();
 		}
+
+		// filter max proportion of max score after ambiguity check; reuse $max variable
+		$max = count( $inputgrams ) * $this->maxNgrams * $this->maxProportion;
+		$results = array_filter( $results, function ( $res ) use ( $max ) { return $res <= $max;
+		} );
 
 		if ( count( $results ) == 0 ) {
 			$this->resultStatus = self::STATUSNOMATCH;

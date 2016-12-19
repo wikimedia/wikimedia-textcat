@@ -4,12 +4,12 @@
  */
 require_once __DIR__.'/TextCat.php';
 
-$options = getopt( 'a:c:d:f:j:l:m:u:w:h' );
+$options = getopt( 'a:c:d:f:j:l:m:p:u:w:h' );
 
 if ( isset( $options['h'] ) ) {
 	$help = <<<HELP
 {$argv[0]} [-d Dir] [-c Lang] [-a Int] [-u Float] [-l Text]
-           [-f Int] [-j Int] [-m Int] [-w String]
+           [-f Int] [-j Int] [-m Int] [-p Float] [-w String]
 
     -a NUM  The program returns the best-scoring language together
             with all languages which are <N times worse (set by option -u).
@@ -35,6 +35,10 @@ if ( isset( $options['h'] ) ) {
             If this option is not given, the input is stdin.
     -m NUM  Indicates the topmost number of ngrams that should be used.
             Default: 3000
+    -p NUM  Indicates the proportion of the maximum (worst) score possible
+            allowed for a result to be returned. 1.0 indicates that a string
+            made up entirely of n-grams not present in a model can still be
+            classified by that model. Default: 1.0
     -u NUM  Determines how much worse result must be in order not to be
             mentioned as an alternative. Typical value: 1.05 or 1.1.
             Default: 1.05.
@@ -72,7 +76,9 @@ if ( isset( $options['a'] ) ) {
 if ( isset( $options['w'] ) ) {
 	$cat->setWordSeparator( $options['w'] );
 }
-
+if ( !empty( $options['p'] ) ) {
+	$cat->setMaxProportion( floatval( $options['p'] ) );
+}
 
 $input = isset( $options['l'] ) ? $options['l'] : file_get_contents( "php://stdin" );
 if ( !empty( $options['c'] ) ) {

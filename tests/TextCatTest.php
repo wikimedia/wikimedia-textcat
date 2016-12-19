@@ -113,65 +113,65 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( basename( $textFile, ".txt" ), key( $detect ) );
 	}
 
-    public function multiCatData()
-    {
-        return array(
-          array( 'this is english text français bisschen',
+	public function multiCatData()
+	{
+		return array(
+		  array( 'this is english text français bisschen',
 				array( 'sco', 'en', 'fr',  'de' ),
 				array( 'fr',  'de', 'sco', 'en' ), ),
-          array( 'الاسم العلمي: Felis catu',
+		  array( 'الاسم العلمي: Felis catu',
 				array( 'ar', 'la', 'fa', 'fr' ),
 				array( 'ar', 'fr', 'la', 'fa' ), ),
-          array( 'Кошка, или домашняя кошка A macska más néven házi macska',
+		  array( 'Кошка, или домашняя кошка A macska más néven házi macska',
 				array( 'ru', 'uk', 'hu', 'fi' ),
 				array( 'hu', 'ru', 'uk', 'fi' ), ),
-          array( 'Il gatto domestico Kucing disebut juga kucing domestik',
+		  array( 'Il gatto domestico Kucing disebut juga kucing domestik',
 				array( 'id', 'it', 'pt', 'es' ),
 				array( 'it', 'id', 'es', 'pt' ), ),
-          array( 'Domaća mačka Pisică de casă Hejma kato',
+		  array( 'Domaća mačka Pisică de casă Hejma kato',
 				array( 'hr', 'ro', 'eo', 'cs' ),
 				array( 'hr', 'cs', 'ro', 'eo' ), ),
-        );
-    }
+		);
+	}
 
-    /**
-     * @dataProvider multiCatData
+	/**
+	 * @dataProvider multiCatData
 	 * @param string $testLine
 	 * @param array $res1
 	 * @param array $res2
-     */
-    public function testMultiCat( $testLine, $res1, $res2 )
-    {
-        $this->assertEquals( array_keys( $this->multicat1->classify( $testLine, $res1 ) ),
+	 */
+	public function testMultiCat( $testLine, $res1, $res2 )
+	{
+		$this->assertEquals( array_keys( $this->multicat1->classify( $testLine, $res1 ) ),
 							 array_values( $res1 ) );
-        $this->assertEquals( array_keys( $this->multicat2->classify( $testLine, $res2 ) ),
+		$this->assertEquals( array_keys( $this->multicat2->classify( $testLine, $res2 ) ),
 							 array_values( $res2 ) );
-    }
+	}
 
-    public function minInputLengthData()
-    {
-        return array(
-          array( 'eso es español',
+	public function minInputLengthData()
+	{
+		return array(
+		  array( 'eso es español',
 				array( 'spanish', 'catalan', 'portuguese' ), null, ),
-          array( 'this is english',
+		  array( 'this is english',
 				array( 'english', 'german' ), null, ),
-          array( 'c\'est français',
+		  array( 'c\'est français',
 				array( 'french', 'portuguese', 'romanian', 'catalan' ), null, ),
-          // numbers and spaces get stripped, so result should be an empty array
-          // regardless of min input length
-          array( '56 8 49564     83 9',
+		  // numbers and spaces get stripped, so result should be an empty array
+		  // regardless of min input length
+		  array( '56 8 49564	 83 9',
 				array( 'french', 'portuguese', 'romanian', 'catalan' ), array(), ),
-        );
-    }
+		);
+	}
 
-    /**
-     * @dataProvider minInputLengthData
+	/**
+	 * @dataProvider minInputLengthData
 	 * @param string $testLine
 	 * @param array $lang
 	 * @param array $res
-     */
-    public function testMinInputLength( $testLine, $lang, $res )
-    {
+	 */
+	public function testMinInputLength( $testLine, $lang, $res )
+	{
 		if ( !isset( $res ) ) {
 			$res = $lang;
 		}
@@ -187,57 +187,86 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 			$this->assertEquals( $this->testcat->getResultStatus(), '' );
 		}
 
-        // should get no results when min input len is more than the length of the string
-        $this->testcat->setMinInputLength( mb_strlen( $testLine ) + 1 );
-        $this->assertEquals( array_keys( $this->testcat->classify( $testLine, $res ) ),
-                             array() );
+		// should get no results when min input len is more than the length of the string
+		$this->testcat->setMinInputLength( mb_strlen( $testLine ) + 1 );
+		$this->assertEquals( array_keys( $this->testcat->classify( $testLine, $res ) ),
+							 array() );
 		$this->assertEquals( $this->testcat->getResultStatus(), TextCat::STATUSTOOSHORT );
 
 		// reset to defaults
 		$this->testcat->setMinInputLength( 0 );
 		$this->testcat->setResultsRatio( 1.05 );
-    }
+	}
 
-    public function ambiguityData()
-    {
-        return array(
-          array( 'espanol português', 1.05, 10, 3000, array( 'pt' ), '' ),
-          array( 'espanol português', 1.20, 10, 3000, array( 'pt', 'es' ), '' ),
-          array( 'espanol português', 1.20,  2, 3000, array( 'pt', 'es' ), '' ),
-          array( 'espanol português', 1.20,  1, 3000, array(), TextCat::STATUSAMBIGUOUS ),
-          array( 'espanol português', 1.30, 10, 3000, array( 'pt', 'es', 'fr', 'it', 'en', 'pl' ), '' ),
-          array( 'espanol português', 1.30,  6, 3000, array( 'pt', 'es', 'fr', 'it', 'en', 'pl' ), '' ),
-          array( 'espanol português', 1.30,  5, 3000, array(), TextCat::STATUSAMBIGUOUS ),
-          array( 'espanol português', 1.10, 20,  500,
-			array( 'pt', 'es', 'it', 'fr', 'pl', 'cs', 'en', 'sv', 'de', 'id', 'nl' ), '' ),
-          array( 'espanol português', 1.10, 20,  700, array( 'pt', 'es', 'it', 'fr', 'en', 'de' ), '' ),
-          array( 'espanol português', 1.10, 20, 1000, array( 'pt', 'es', 'it', 'fr' ), '' ),
-          array( 'espanol português', 1.10, 20, 2000, array( 'pt', 'es' ), '' ),
-          array( 'espanol português', 1.10, 20, 3000, array( 'pt' ), '' ),
-        );
-    }
+	public function ambiguityData()
+	{
+		return array(
+		  // check effects of results ratio and max returned langs
+		  array( 'espanol português', 1.05, 10, 3000, 1.00, array( 'pt' ), '' ),
+		  array( 'espanol português', 1.20, 10, 3000, 1.00, array( 'pt', 'es' ), '' ),
+		  array( 'espanol português', 1.20,  2, 3000, 1.00, array( 'pt', 'es' ), '' ),
+		  array( 'espanol português', 1.20,  1, 3000, 1.00, array(), TextCat::STATUSAMBIGUOUS ),
+		  array( 'espanol português', 1.30, 10, 3000, 1.00,
+				array( 'pt', 'es', 'fr', 'it', 'en', 'pl' ), '' ),
+		  array( 'espanol português', 1.30,  6, 3000, 1.00,
+				 array( 'pt', 'es', 'fr', 'it', 'en', 'pl' ), '' ),
+		  array( 'espanol português', 1.30,  5, 3000, 1.00, array(), TextCat::STATUSAMBIGUOUS ),
 
-    /**
-     * @dataProvider ambiguityData
+		  // check effects of model size
+		  array( 'espanol português', 1.10, 20,  500, 1.00,
+				 array( 'pt', 'es', 'it', 'fr', 'pl', 'cs', 'en', 'sv', 'de', 'id', 'nl' ), '' ),
+		  array( 'espanol português', 1.10, 20,  700, 1.00,
+				 array( 'pt', 'es', 'it', 'fr', 'en', 'de' ), '' ),
+		  array( 'espanol português', 1.10, 20, 1000, 1.00, array( 'pt', 'es', 'it', 'fr' ), '' ),
+		  array( 'espanol português', 1.10, 20, 2000, 1.00, array( 'pt', 'es' ), '' ),
+		  array( 'espanol português', 1.10, 20, 3000, 1.00, array( 'pt' ), '' ),
+
+		  // check effect of max proportion
+		  array( 'espanol português', 1.50, 20, 3000, 1.00,
+				 array( 'pt', 'es', 'fr', 'it', 'en', 'pl', 'de',
+						'tr', 'sv', 'cs', 'nl', 'id', 'vi' ),
+				 '' ),
+		  array( 'espanol português', 1.50, 20, 3000, 0.56,
+				 array( 'pt', 'es', 'fr', 'it', 'en', 'pl', 'de', 'tr', 'sv' ), '' ),
+		  array( 'espanol português', 1.50, 20, 3000, 0.55,
+				 array( 'pt', 'es', 'fr', 'it', 'en', 'pl' ), '' ),
+		  array( 'espanol português', 1.50, 20, 3000, 0.54, array( 'pt', 'es', 'fr', 'it' ), '' ),
+		  array( 'espanol português', 1.50, 20, 3000, 0.52, array( 'pt', 'es', 'fr' ), '' ),
+		  array( 'espanol português', 1.50, 20, 3000, 0.51, array( 'pt', 'es' ), '' ),
+		  array( 'espanol português', 1.50, 20, 3000, 0.45, array( 'pt' ), '' ),
+		  array( 'espanol português', 1.50, 20, 3000, 0.40, array(), TextCat::STATUSNOMATCH ),
+
+		  // max proportion vs junk
+		  array( 'qqqaaagggsggsggssssssshshshssss', 1.05, 10, 3000, 1.00,
+			array( 'de', 'vi', 'sv', 'en', 'nl', 'it', 'id', 'fr' ), '' ),
+		  array( 'qqqaaagggsggsggssssssshshshssss', 1.05, 10, 3000, 0.80,
+			array(), TextCat::STATUSNOMATCH ),
+		);
+	}
+
+	/**
+	 * @dataProvider ambiguityData
 	 * @param string $testLine
 	 * @param array $lang
 	 * @param array $res
-     */
-    public function testAmbiguity( $testLine, $resRatio, $maxRetLang, $modelSize, $results, $errMsg )
-    {
+	 */
+	public function testAmbiguity( $testLine, $resRatio, $maxRetLang, $modelSize, $maxProportion,
+								   $results, $errMsg )
+	{
 		$this->ambiguouscat->setMaxNgrams( $modelSize );
 		$this->ambiguouscat->setResultsRatio( $resRatio );
 		$this->ambiguouscat->setMaxReturnedLanguages( $maxRetLang );
+		$this->ambiguouscat->setMaxProportion( $maxProportion );
 
 		$this->assertEquals( array_keys( $this->ambiguouscat->classify( $testLine ) ),
 							 array_values( $results ) );
 		$this->assertEquals( $this->ambiguouscat->getResultStatus(), $errMsg );
-    }
+	}
 
 	public function testNoMatch()
 	{
 		# no xxx.lm model exists, so get no match
-        $this->assertEquals( array_keys( $this->testcat->classify( "some string", array( "xxx" ) ) ),
+		$this->assertEquals( array_keys( $this->testcat->classify( "a string", array( "xxx" ) ) ),
 							 array() );
 		$this->assertEquals( $this->testcat->getResultStatus(), TextCat::STATUSNOMATCH );
 	}
