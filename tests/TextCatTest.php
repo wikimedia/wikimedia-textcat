@@ -263,6 +263,60 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( $this->ambiguouscat->getResultStatus(), $errMsg );
 	}
 
+	public function boostedLangData()
+	{
+		return array(
+		  array( 'this is english text français bisschen',
+				array( 'sco', 'en', 'fr', 'de' ),
+				array( 'en', 'sco', 'fr', 'de' ),
+				array( array( 'en' ), 0.01 ) ),
+
+		  array( 'this is english text français bisschen',
+				array( 'sco', 'en', 'fr', 'de' ),
+				array( 'en', 'sco', 'de', 'fr' ),
+				array( array( 'en', 'de' ), 0.01 ) ),
+
+		  array( 'this is english text français bisschen',
+				array( 'sco', 'en', 'fr',  'de' ),
+				array( 'en',  'de', 'sco', 'fr' ),
+				array( array( 'en', 'de' ), 0.02 ) ),
+
+		  array( 'this is english text français bisschen',
+				array( 'sco', 'en', 'fr',  'de' ),
+				array( 'en',  'fr', 'sco', 'de' ),
+				array( array( 'en', 'fr' ), 0.02 ) ),
+
+		  array( 'this is english text français bisschen',
+				array( 'sco', 'en', 'fr', 'de' ),
+				array( 'fr', 'sco', 'en', 'de' ),
+				array( array( 'fr' ), 0.10 ) ),
+
+		);
+	}
+
+	/**
+	 * @dataProvider boostedLangData
+	 * @param string $testLine
+	 * @param array $res1
+	 * @param array $res2
+	 * @param array $boost
+	 */
+	public function testBoostedLangs( $testLine, $res1, $res2, $boost )
+	{
+		$this->multicat1->setBoostedLangs( array() );
+		$this->multicat1->setLangBoostScore( 0.0 );
+		$this->assertEquals( array_keys( $this->multicat1->classify( $testLine, $res1 ) ),
+							 array_values( $res1 ) );
+
+		$this->multicat1->setBoostedLangs( $boost[0] );
+		$this->multicat1->setLangBoostScore( $boost[1] );
+		$this->assertEquals( array_keys( $this->multicat1->classify( $testLine, $res1 ) ),
+							 array_values( $res2 ) );
+
+		$this->multicat1->setBoostedLangs( array() );
+		$this->multicat1->setLangBoostScore( 0.0 );
+	}
+
 	public function testNoMatch()
 	{
 		# no xxx.lm model exists, so get no match

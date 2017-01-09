@@ -4,12 +4,13 @@
  */
 require_once __DIR__.'/TextCat.php';
 
-$options = getopt( 'a:c:d:f:j:l:m:p:u:w:h' );
+$options = getopt( 'a:b:B:c:d:f:j:l:m:p:u:w:h' );
 
 if ( isset( $options['h'] ) ) {
 	$help = <<<HELP
 {$argv[0]} [-d Dir] [-c Lang] [-a Int] [-u Float] [-l Text]
            [-f Int] [-j Int] [-m Int] [-p Float] [-w String]
+           [-b Float -B Lang]
 
     -a NUM  The program returns the best-scoring language together
             with all languages which are <N times worse (set by option -u).
@@ -17,6 +18,11 @@ if ( isset( $options['h'] ) ) {
             of this option then no language is returned, but instead a
             message that the input is of an unknown language is printed.
             Default: 10.
+    -b NUM  Boost to apply to languages specified by -B. Typical value:
+            0.05 to 0.15. Default: 0
+    -B LANG,LANG
+            Comma-separated list of languages to boost by amount specified
+            by -b. Default: none
     -c LANG,LANG,...
             Lists the candidate languages. Only languages listed will be
             considered for detection.
@@ -58,8 +64,14 @@ if ( !empty( $options['d'] ) ) {
 
 $cat = new TextCat( $dirs );
 
-if ( !empty( $options['m'] ) ) {
-	$cat->setMaxNgrams( intval( $options['m'] ) );
+if ( isset( $options['a'] ) ) {
+	$cat->setMaxReturnedLanguages( intval( $options['a'] ) );
+}
+if ( isset( $options['b'] ) ) {
+	$cat->setLangBoostScore( floatval( $options['b'] ) );
+}
+if ( !empty( $options['B'] ) ) {
+	$cat->setBoostedLangs( explode( ",", $options['B'] ) );
 }
 if ( !empty( $options['f'] ) ) {
 	$cat->setMinFreq( intval( $options['f'] ) );
@@ -67,20 +79,21 @@ if ( !empty( $options['f'] ) ) {
 if ( isset( $options['j'] ) ) {
 	$cat->setMinInputLength( intval( $options['j'] ) );
 }
-if ( !empty( $options['u'] ) ) {
-	$cat->setResultsRatio( floatval( $options['u'] ) );
-}
-if ( isset( $options['a'] ) ) {
-	$cat->setMaxReturnedLanguages( intval( $options['a'] ) );
-}
-if ( isset( $options['w'] ) ) {
-	$cat->setWordSeparator( $options['w'] );
+if ( !empty( $options['m'] ) ) {
+	$cat->setMaxNgrams( intval( $options['m'] ) );
 }
 if ( !empty( $options['p'] ) ) {
 	$cat->setMaxProportion( floatval( $options['p'] ) );
 }
+if ( !empty( $options['u'] ) ) {
+	$cat->setResultsRatio( floatval( $options['u'] ) );
+}
+if ( isset( $options['w'] ) ) {
+	$cat->setWordSeparator( $options['w'] );
+}
 
 $input = isset( $options['l'] ) ? $options['l'] : file_get_contents( "php://stdin" );
+
 if ( !empty( $options['c'] ) ) {
 	$result = $cat->classify( $input, explode( ",", $options['c'] ) );
 } else {

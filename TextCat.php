@@ -74,6 +74,19 @@ class TextCat {
 	 */
 	private $maxProportion = 1.00;
 
+	/**
+	 * Amount to boost scores for languages
+	 * specified by $boostedLangs; typical
+	 * values are 0 to 0.15;
+	 * @var float
+	 */
+	private $langBoostScore = 0.00;
+
+	/**
+	 * List of languages to boost by $langBoostScore
+	 * @var string[]
+	 */
+	private $boostedLangs = array();
 
 	/**
 	 * @param
@@ -122,6 +135,21 @@ class TextCat {
 	 */
 	public function setMaxProportion( $maxProportion ) {
 		$this->maxProportion = $maxProportion;
+	}
+
+	/**
+	 * @param float $langBoostScore
+	 */
+	public function setLangBoostScore( $langBoostScore ) {
+		$this->langBoostScore = $langBoostScore;
+	}
+
+	/**
+	 * @param float $langBoostScore
+	 */
+	public function setBoostedLangs( $boostedLangs = array() ) {
+		// flip for more efficient lookups
+		$this->boostedLangs = array_flip( $boostedLangs );
 	}
 
 	/**
@@ -267,6 +295,9 @@ class TextCat {
 				} else {
 					$p += $this->maxNgrams;
 				}
+			}
+			if ( isset( $this->boostedLangs[$language] ) ) {
+				$p = round( $p * ( 1 - $this->langBoostScore ) );
 			}
 			$results[$language] = $p;
 		}
