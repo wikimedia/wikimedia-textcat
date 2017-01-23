@@ -241,6 +241,12 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 			array( 'de', 'vi', 'sv', 'en', 'nl', 'it', 'id', 'fr' ), '' ),
 		  array( 'qqqaaagggsggsggssssssshshshssss', 1.05, 10, 3000, 0.80,
 			array(), TextCat::STATUSNOMATCH ),
+
+		  // test larger models
+		  array( 'espanol português', 1.50, 20, 5000, 1.00,
+				 array( 'pt', 'es', 'fr', 'it', 'tr', 'de', 'pl', 'en', 'sv' ), '' ),
+		  array( 'espanol português', 1.50, 20, 10000, 1.00,
+				 array( 'pt', 'es', 'fr' ), '' ),
 		);
 	}
 

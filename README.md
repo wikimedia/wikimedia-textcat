@@ -115,10 +115,10 @@ in multiple character sets (e.g., Serbo-Croatian/`sh`, Serbian/`sr`,
 Turkmen/`tk`), no such character-set-based filtering was done. The final
 size of the training corpora ranged from ~1.8M to ~2.8M characters.
 
-These models have not been tested and are provided as-is. We may add new
-models or remove poorly-performing models in the future.
+These models have not been thoroughly tested and are provided as-is. We
+may add new models or remove poorly-performing models in the future.
 
-These models have 4000 ngrams. The best number of ngrams to use for
+These models have 10,000 ngrams. The best number of ngrams to use for
 language identification is application-dependent. For larger texts
 (e.g., containing hundreds of words per sample), significantly smaller
 ngram sets may be best. You can set the number to be used by changing
@@ -127,7 +127,7 @@ ngram sets may be best. You can set the number to be used by changing
 
 ### Wiki Query Models.
 
-The 19 language models in `LM-query` are based on query data from
+The 30 language models in `LM-query` are based on query data from
 Wikipedia which is less formal (e.g., fewer diacritics are used in
 languages that have them) and has a different distribution of words than
 general text. The original set of languages considered was based on the
@@ -147,13 +147,14 @@ report](https://www.mediawiki.org/wiki/User:TJones_(WMF)/Notes/
 Language_Detection_with_TextCat) on TextCat. More languages will be
 added in the future based on additional performance evaluations.
 
-These models have 5000 ngrams. The best number of ngrams to use for
+These models have 10,000 ngrams. The best number of ngrams to use for
 language identification is application-dependent. For larger texts
 (e.g., containing hundreds of words per sample), significantly smaller
 ngram sets may be best. For short query seen on English Wikipedia
-strings, a model size of 3000 ngrams has worked best. You can set the
-number to be used by changing `$maxNgrams` in `TextCat.php` or in
-`felis.php`, or using `-m` with `catus.php`.
+strings, a model size of 3000 to 9000 ngrams has worked best, depending
+on other parameter settings. You can set the number to be used by
+changing `$maxNgrams` in `TextCat.php` or in `felis.php`, or using `-m`
+with `catus.php`.
 
 
 [![Build Status](https://travis-ci.org/smalyshev/textcat.svg?branch=master)](https://travis-ci.org/smalyshev/textcat)
