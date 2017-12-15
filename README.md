@@ -157,4 +157,4 @@ changing `$maxNgrams` in `TextCat.php` or in `felis.php`, or using `-m`
 with `catus.php`.
 
 
-[![Build Status](https://travis-ci.org/smalyshev/textcat.svg?branch=master)](https://travis-ci.org/smalyshev/textcat)
+[![Build Status](https://travis-ci.org/wikimedia/wikimeda-textcat.svg?branch=master)](https://travis-ci.org/wikimedia/wikimedia-textcat)
