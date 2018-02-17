@@ -41,7 +41,7 @@ class TextCat {
 	 * List of language files
 	 * @var string[]
 	 */
-	private $langFiles = array();
+	private $langFiles = [];
 
 	/**
 	 * Minimum input length to be considered for
@@ -86,10 +86,10 @@ class TextCat {
 	 * List of languages to boost by $langBoostScore
 	 * @var string[]
 	 */
-	private $boostedLangs = array();
+	private $boostedLangs = [];
 
 	/**
-	 * @param
+	 * @return string
 	 */
 	public function getResultStatus() {
 		return $this->resultStatus;
@@ -145,9 +145,9 @@ class TextCat {
 	}
 
 	/**
-	 * @param float $langBoostScore
+	 * @param array $boostedLangs
 	 */
-	public function setBoostedLangs( $boostedLangs = array() ) {
+	public function setBoostedLangs( $boostedLangs = [] ) {
 		// flip for more efficient lookups
 		$this->boostedLangs = array_flip( $boostedLangs );
 	}
@@ -162,12 +162,12 @@ class TextCat {
 	/**
 	 * @param string|array $dirs
 	 */
-	public function __construct( $dirs = array() ) {
+	public function __construct( $dirs = [] ) {
 		if ( empty( $dirs ) ) {
-			$dirs = array( __DIR__."/LM" );
+			$dirs = [ __DIR__."/LM" ];
 		}
 		if ( !is_array( $dirs ) ) {
-			$dirs = array( $dirs );
+			$dirs = [ $dirs ];
 		}
 		foreach ( $dirs as $dir ) {
 			foreach ( new DirectoryIterator( $dir ) as $file ) {
@@ -175,7 +175,8 @@ class TextCat {
 					continue;
 				}
 				if ( $file->getExtension() == "lm" &&
-				     !isset( $this->langFiles[$file->getBasename( ".lm" )] ) ) {
+					!isset( $this->langFiles[$file->getBasename( ".lm" )] )
+				) {
 					$this->langFiles[$file->getBasename( ".lm" )] = $file->getPathname();
 				}
 			}
@@ -189,14 +190,14 @@ class TextCat {
 	 * @return int[]
 	 */
 	public function createLM( $text, $maxNgrams ) {
-		$ngram = array();
+		$ngram = [];
 		foreach ( preg_split( "/[{$this->wordSeparator}]+/u", $text ) as $word ) {
 			if ( empty( $word ) ) {
 				continue;
 			}
-			$word = "_".$word."_";
+			$word = "_" . $word . "_";
 			$len = mb_strlen( $word, "UTF-8" );
-			for ( $i=0;$i<$len;$i++ ) {
+			for ( $i = 0; $i < $len; $i++ ) {
 				$rlen = $len - $i;
 				if ( $rlen > 4 ) {
 					@$ngram[mb_substr( $word, $i, 5, "UTF-8" )]++;
@@ -215,11 +216,11 @@ class TextCat {
 		}
 		if ( $this->minFreq ) {
 			$min = $this->minFreq;
-			$ngram = array_filter( $ngram, function ( $v ) use( $min ) { return $v > $min;
-
-	  } );
+			$ngram = array_filter( $ngram, function ( $v ) use ( $min ) {
+				return $v > $min;
+			} );
 		}
-		uksort( $ngram, function( $k1, $k2 ) use( $ngram ) {
+		uksort( $ngram, function ( $k1, $k2 ) use ( $ngram ) {
 				if ( $ngram[$k1] == $ngram[$k2] ) {
 					return strcmp( $k1, $k2 );
 				}
@@ -253,9 +254,9 @@ class TextCat {
 		fwrite( $out, '<?php $ngrams = ' . var_export( $ngrams, true ) . ";\n" );
 		// write reduced array as "$ranks"
 		$rank = 1;
-		$ranks = array_map( function ( $x ) use( &$rank ) { return $rank++;
-
-	 }, $ngrams );
+		$ranks = array_map( function ( $x ) use ( &$rank ) {
+			return $rank++;
+		}, $ngrams );
 		fwrite( $out, '$ranks = ' . var_export( $ranks, true ) . ";\n" );
 		fclose( $out );
 	}
@@ -268,7 +269,7 @@ class TextCat {
 	 * 				 Sorted by ascending score, with first result being the best.
 	 */
 	public function classify( $text, $candidates = null ) {
-		$results = array();
+		$results = [];
 		$this->resultStatus = '';
 
 		// strip non-word characters before checking for min length, don't assess empty strings
@@ -306,18 +307,20 @@ class TextCat {
 
 		// ignore any item that scores higher than best * resultsRatio
 		$max = reset( $results ) * $this->resultsRatio;
-		$results = array_filter( $results, function ( $res ) use ( $max ) { return $res <= $max;
+		$results = array_filter( $results, function ( $res ) use ( $max ) {
+			return $res <= $max;
 		} );
 
 		// if more than maxReturnedLanguages remain, the result is too ambiguous, so bail
 		if ( count( $results ) > $this->maxReturnedLanguages ) {
 			$this->resultStatus = self::STATUSAMBIGUOUS;
-			return array();
+			return [];
 		}
 
 		// filter max proportion of max score after ambiguity check; reuse $max variable
 		$max = count( $inputgrams ) * $this->maxNgrams * $this->maxProportion;
-		$results = array_filter( $results, function ( $res ) use ( $max ) { return $res <= $max;
+		$results = array_filter( $results, function ( $res ) use ( $max ) {
+			return $res <= $max;
 		} );
 
 		if ( count( $results ) == 0 ) {
@@ -328,4 +331,3 @@ class TextCat {
 		return $results;
 	}
 }
-
