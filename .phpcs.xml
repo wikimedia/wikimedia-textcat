@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="textcat">
-	<rule ref="vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
+	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
 		<exclude name="Generic.PHP.NoSilencedErrors.Discouraged"/>
 		<exclude name="MediaWiki.Commenting.FunctionComment.MissingParamComment"/>
 	</rule>
