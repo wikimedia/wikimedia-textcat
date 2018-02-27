@@ -1,37 +1,33 @@
 <?php
 require_once __DIR__.'/../TextCat.php';
 
-class TextCatTest extends PHPUnit_Framework_TestCase
-{
+class TextCatTest extends PHPUnit\Framework\TestCase {
 	/**
 	 * TextCat instance
 	 * @var TextCat
 	 */
 	protected $cat;
 
-	public function setUp()
-	{
+	public function setUp() {
 		// initialize testcat with a string
 		$this->testcat = new TextCat( __DIR__."/data/Models" );
 
 		// initialize multicats with multi-element arrays
-		$this->multicat1 = new TextCat( array( __DIR__."/../LM", __DIR__."/../LM-query" ) );
-		$this->multicat2 = new TextCat( array( __DIR__."/../LM-query", __DIR__."/../LM" ) );
+		$this->multicat1 = new TextCat( [ __DIR__."/../LM", __DIR__."/../LM-query" ] );
+		$this->multicat2 = new TextCat( [ __DIR__."/../LM-query", __DIR__."/../LM" ] );
 
 		// effectively disable RR-based filtering for these cats
 		$this->multicat1->setResultsRatio( 100 );
 		$this->multicat2->setResultsRatio( 100 );
 
 		// initialize ambiguouscat with a one-element array
-		$this->ambiguouscat = new TextCat( array( __DIR__."/../LM-query" ) );
-
+		$this->ambiguouscat = new TextCat( [ __DIR__."/../LM-query" ] );
 	}
 
-	public function testCreateLM()
-	{
+	public function testCreateLM() {
 		$lm = $this->testcat->createLM( "test", 1000 );
 		$result =
-		array(
+		[
 		  '_' => 2,
 		  't' => 2,
 		  '_t' => 1,
@@ -50,33 +46,31 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 		  'tes' => 1,
 		  'test' => 1,
 		  'test_' => 1,
-		);
+		];
 		$this->assertEquals( $result, $lm );
 	}
 
-	public function testCreateLMLimit()
-	{
+	public function testCreateLMLimit() {
 		$lm = $this->testcat->createLM( "test", 4 );
 		$result =
-		array(
+		[
 		  '_' => 2,
 		  't' => 2,
 		  '_t' => 1,
 		  '_te' => 1,
-		);
+		];
 		$this->assertEquals( $result, $lm );
 	}
 
-	public function getTexts()
-	{
+	public function getTexts() {
 		$indir = __DIR__."/data/ShortTexts";
 		$outdir = __DIR__."/data/Models";
-		$data = array();
-		foreach( new DirectoryIterator( $indir ) as $file ) {
+		$data = [];
+		foreach ( new DirectoryIterator( $indir ) as $file ) {
 			if ( !$file->isFile() || $file->getExtension() != "txt" ) {
 				continue;
 			}
-			$data[] = array( $file->getPathname(), $outdir . "/" . $file->getBasename( ".txt" ) . ".lm" );
+			$data[] = [ $file->getPathname(), $outdir . "/" . $file->getBasename( ".txt" ) . ".lm" ];
 		}
 		return $data;
 	}
@@ -86,8 +80,7 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 	 * @param string $text
 	 * @param string $lm
 	 */
-	public function testCreateFromTexts( $textFile, $lmFile )
-	{
+	public function testCreateFromTexts( $textFile, $lmFile ) {
 		include $lmFile;
 		$this->assertEquals(
 				$ngrams,
@@ -100,38 +93,36 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 	 * @param string $text
 	 * @param string $lm
 	 */
-	public function testFileLines( $textFile )
-	{
+	public function testFileLines( $textFile ) {
 		$lines = file( $textFile );
 		$line = 5;
 		do {
 			$testLine = trim( $lines[$line] );
 			$line++;
-		} while( empty( $testLine ) );
+		} while ( empty( $testLine ) );
 		$detect = $this->testcat->classify( $testLine );
 		reset( $detect );
 		$this->assertEquals( basename( $textFile, ".txt" ), key( $detect ) );
 	}
 
-	public function multiCatData()
-	{
-		return array(
-		  array( 'this is english text français bisschen',
-				array( 'sco', 'en', 'fr',  'de' ),
-				array( 'fr',  'de', 'sco', 'en' ), ),
-		  array( 'الاسم العلمي: Felis catu',
-				array( 'ar', 'la', 'fa', 'fr' ),
-				array( 'ar', 'fr', 'la', 'fa' ), ),
-		  array( 'Кошка, или домашняя кошка A macska más néven házi macska',
-				array( 'ru', 'uk', 'hu', 'fi' ),
-				array( 'hu', 'ru', 'uk', 'fi' ), ),
-		  array( 'Il gatto domestico Kucing disebut juga kucing domestik',
-				array( 'id', 'it', 'pt', 'es' ),
-				array( 'it', 'id', 'es', 'pt' ), ),
-		  array( 'Domaća mačka Pisică de casă Hejma kato',
-				array( 'hr', 'ro', 'eo', 'cs' ),
-				array( 'hr', 'cs', 'ro', 'eo' ), ),
-		);
+	public function multiCatData() {
+		return [
+		  [ 'this is english text français bisschen',
+				[ 'sco', 'en', 'fr',  'de' ],
+				[ 'fr',  'de', 'sco', 'en' ], ],
+		  [ 'الاسم العلمي: Felis catu',
+				[ 'ar', 'la', 'fa', 'fr' ],
+				[ 'ar', 'fr', 'la', 'fa' ], ],
+		  [ 'Кошка, или домашняя кошка A macska más néven házi macska',
+				[ 'ru', 'uk', 'hu', 'fi' ],
+				[ 'hu', 'ru', 'uk', 'fi' ], ],
+		  [ 'Il gatto domestico Kucing disebut juga kucing domestik',
+				[ 'id', 'it', 'pt', 'es' ],
+				[ 'it', 'id', 'es', 'pt' ], ],
+		  [ 'Domaća mačka Pisică de casă Hejma kato',
+				[ 'hr', 'ro', 'eo', 'cs' ],
+				[ 'hr', 'cs', 'ro', 'eo' ], ],
+		];
 	}
 
 	/**
@@ -140,28 +131,26 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 	 * @param array $res1
 	 * @param array $res2
 	 */
-	public function testMultiCat( $testLine, $res1, $res2 )
-	{
+	public function testMultiCat( $testLine, $res1, $res2 ) {
 		$this->assertEquals( array_keys( $this->multicat1->classify( $testLine, $res1 ) ),
 							 array_values( $res1 ) );
 		$this->assertEquals( array_keys( $this->multicat2->classify( $testLine, $res2 ) ),
 							 array_values( $res2 ) );
 	}
 
-	public function minInputLengthData()
-	{
-		return array(
-		  array( 'eso es español',
-				array( 'spanish', 'catalan', 'portuguese' ), null, ),
-		  array( 'this is english',
-				array( 'english', 'german' ), null, ),
-		  array( 'c\'est français',
-				array( 'french', 'portuguese', 'romanian', 'catalan' ), null, ),
+	public function minInputLengthData() {
+		return [
+		  [ 'eso es español',
+				[ 'spanish', 'catalan', 'portuguese' ], null, ],
+		  [ 'this is english',
+				[ 'english', 'german' ], null, ],
+		  [ 'c\'est français',
+				[ 'french', 'portuguese', 'romanian', 'catalan' ], null, ],
 		  // numbers and spaces get stripped, so result should be an empty array
 		  // regardless of min input length
-		  array( '56 8 49564	 83 9',
-				array( 'french', 'portuguese', 'romanian', 'catalan' ), array(), ),
-		);
+		  [ '56 8 49564	 83 9',
+				[ 'french', 'portuguese', 'romanian', 'catalan' ], [], ],
+		];
 	}
 
 	/**
@@ -170,8 +159,7 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 	 * @param array $lang
 	 * @param array $res
 	 */
-	public function testMinInputLength( $testLine, $lang, $res )
-	{
+	public function testMinInputLength( $testLine, $lang, $res ) {
 		if ( !isset( $res ) ) {
 			$res = $lang;
 		}
@@ -190,7 +178,7 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 		// should get no results when min input len is more than the length of the string
 		$this->testcat->setMinInputLength( mb_strlen( $testLine ) + 1 );
 		$this->assertEquals( array_keys( $this->testcat->classify( $testLine, $res ) ),
-							 array() );
+							 [] );
 		$this->assertEquals( $this->testcat->getResultStatus(), TextCat::STATUSTOOSHORT );
 
 		// reset to defaults
@@ -198,56 +186,55 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 		$this->testcat->setResultsRatio( 1.05 );
 	}
 
-	public function ambiguityData()
-	{
-		return array(
+	public function ambiguityData() {
+		return [
 		  // check effects of results ratio and max returned langs
-		  array( 'espanol português', 1.05, 10, 3000, 1.00, array( 'pt' ), '' ),
-		  array( 'espanol português', 1.20, 10, 3000, 1.00, array( 'pt', 'es' ), '' ),
-		  array( 'espanol português', 1.20,  2, 3000, 1.00, array( 'pt', 'es' ), '' ),
-		  array( 'espanol português', 1.20,  1, 3000, 1.00, array(), TextCat::STATUSAMBIGUOUS ),
-		  array( 'espanol português', 1.30, 10, 3000, 1.00,
-				array( 'pt', 'es', 'fr', 'it', 'en', 'pl' ), '' ),
-		  array( 'espanol português', 1.30,  6, 3000, 1.00,
-				 array( 'pt', 'es', 'fr', 'it', 'en', 'pl' ), '' ),
-		  array( 'espanol português', 1.30,  5, 3000, 1.00, array(), TextCat::STATUSAMBIGUOUS ),
+		  [ 'espanol português', 1.05, 10, 3000, 1.00, [ 'pt' ], '' ],
+		  [ 'espanol português', 1.20, 10, 3000, 1.00, [ 'pt', 'es' ], '' ],
+		  [ 'espanol português', 1.20,  2, 3000, 1.00, [ 'pt', 'es' ], '' ],
+		  [ 'espanol português', 1.20,  1, 3000, 1.00, [], TextCat::STATUSAMBIGUOUS ],
+		  [ 'espanol português', 1.30, 10, 3000, 1.00,
+				[ 'pt', 'es', 'fr', 'it', 'en', 'pl' ], '' ],
+		  [ 'espanol português', 1.30,  6, 3000, 1.00,
+				 [ 'pt', 'es', 'fr', 'it', 'en', 'pl' ], '' ],
+		  [ 'espanol português', 1.30,  5, 3000, 1.00, [], TextCat::STATUSAMBIGUOUS ],
 
 		  // check effects of model size
-		  array( 'espanol português', 1.10, 20,  500, 1.00,
-				 array( 'pt', 'es', 'it', 'fr', 'pl', 'cs', 'en', 'sv', 'de', 'id', 'nl' ), '' ),
-		  array( 'espanol português', 1.10, 20,  700, 1.00,
-				 array( 'pt', 'es', 'it', 'fr', 'en', 'de' ), '' ),
-		  array( 'espanol português', 1.10, 20, 1000, 1.00, array( 'pt', 'es', 'it', 'fr' ), '' ),
-		  array( 'espanol português', 1.10, 20, 2000, 1.00, array( 'pt', 'es' ), '' ),
-		  array( 'espanol português', 1.10, 20, 3000, 1.00, array( 'pt' ), '' ),
+		  [ 'espanol português', 1.10, 20,  500, 1.00,
+				 [ 'pt', 'es', 'it', 'fr', 'pl', 'cs', 'en', 'sv', 'de', 'id', 'nl' ], '' ],
+		  [ 'espanol português', 1.10, 20,  700, 1.00,
+				 [ 'pt', 'es', 'it', 'fr', 'en', 'de' ], '' ],
+		  [ 'espanol português', 1.10, 20, 1000, 1.00, [ 'pt', 'es', 'it', 'fr' ], '' ],
+		  [ 'espanol português', 1.10, 20, 2000, 1.00, [ 'pt', 'es' ], '' ],
+		  [ 'espanol português', 1.10, 20, 3000, 1.00, [ 'pt' ], '' ],
 
 		  // check effect of max proportion
-		  array( 'espanol português', 1.50, 20, 3000, 1.00,
-				 array( 'pt', 'es', 'fr', 'it', 'en', 'pl', 'de',
-						'tr', 'sv', 'cs', 'nl', 'id', 'vi' ),
-				 '' ),
-		  array( 'espanol português', 1.50, 20, 3000, 0.56,
-				 array( 'pt', 'es', 'fr', 'it', 'en', 'pl', 'de', 'tr', 'sv' ), '' ),
-		  array( 'espanol português', 1.50, 20, 3000, 0.55,
-				 array( 'pt', 'es', 'fr', 'it', 'en', 'pl' ), '' ),
-		  array( 'espanol português', 1.50, 20, 3000, 0.54, array( 'pt', 'es', 'fr', 'it' ), '' ),
-		  array( 'espanol português', 1.50, 20, 3000, 0.52, array( 'pt', 'es', 'fr' ), '' ),
-		  array( 'espanol português', 1.50, 20, 3000, 0.51, array( 'pt', 'es' ), '' ),
-		  array( 'espanol português', 1.50, 20, 3000, 0.45, array( 'pt' ), '' ),
-		  array( 'espanol português', 1.50, 20, 3000, 0.40, array(), TextCat::STATUSNOMATCH ),
+		  [ 'espanol português', 1.50, 20, 3000, 1.00,
+				 [ 'pt', 'es', 'fr', 'it', 'en', 'pl', 'de',
+						'tr', 'sv', 'cs', 'nl', 'id', 'vi' ],
+				 '' ],
+		  [ 'espanol português', 1.50, 20, 3000, 0.56,
+				 [ 'pt', 'es', 'fr', 'it', 'en', 'pl', 'de', 'tr', 'sv' ], '' ],
+		  [ 'espanol português', 1.50, 20, 3000, 0.55,
+				 [ 'pt', 'es', 'fr', 'it', 'en', 'pl' ], '' ],
+		  [ 'espanol português', 1.50, 20, 3000, 0.54, [ 'pt', 'es', 'fr', 'it' ], '' ],
+		  [ 'espanol português', 1.50, 20, 3000, 0.52, [ 'pt', 'es', 'fr' ], '' ],
+		  [ 'espanol português', 1.50, 20, 3000, 0.51, [ 'pt', 'es' ], '' ],
+		  [ 'espanol português', 1.50, 20, 3000, 0.45, [ 'pt' ], '' ],
+		  [ 'espanol português', 1.50, 20, 3000, 0.40, [], TextCat::STATUSNOMATCH ],
 
 		  // max proportion vs junk
-		  array( 'qqqaaagggsggsggssssssshshshssss', 1.05, 10, 3000, 1.00,
-			array( 'de', 'vi', 'sv', 'en', 'nl', 'it', 'id', 'fr' ), '' ),
-		  array( 'qqqaaagggsggsggssssssshshshssss', 1.05, 10, 3000, 0.80,
-			array(), TextCat::STATUSNOMATCH ),
+		  [ 'qqqaaagggsggsggssssssshshshssss', 1.05, 10, 3000, 1.00,
+			[ 'de', 'vi', 'sv', 'en', 'nl', 'it', 'id', 'fr' ], '' ],
+		  [ 'qqqaaagggsggsggssssssshshshssss', 1.05, 10, 3000, 0.80,
+			[], TextCat::STATUSNOMATCH ],
 
 		  // test larger models
-		  array( 'espanol português', 1.50, 20, 5000, 1.00,
-				 array( 'pt', 'es', 'fr', 'it', 'tr', 'de', 'pl', 'en', 'sv' ), '' ),
-		  array( 'espanol português', 1.50, 20, 10000, 1.00,
-				 array( 'pt', 'es', 'fr' ), '' ),
-		);
+		  [ 'espanol português', 1.50, 20, 5000, 1.00,
+				 [ 'pt', 'es', 'fr', 'it', 'tr', 'de', 'pl', 'en', 'sv' ], '' ],
+		  [ 'espanol português', 1.50, 20, 10000, 1.00,
+				 [ 'pt', 'es', 'fr' ], '' ],
+		];
 	}
 
 	/**
@@ -257,8 +244,7 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 	 * @param array $res
 	 */
 	public function testAmbiguity( $testLine, $resRatio, $maxRetLang, $modelSize, $maxProportion,
-								   $results, $errMsg )
-	{
+								   $results, $errMsg ) {
 		$this->ambiguouscat->setMaxNgrams( $modelSize );
 		$this->ambiguouscat->setResultsRatio( $resRatio );
 		$this->ambiguouscat->setMaxReturnedLanguages( $maxRetLang );
@@ -269,35 +255,34 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( $this->ambiguouscat->getResultStatus(), $errMsg );
 	}
 
-	public function boostedLangData()
-	{
-		return array(
-		  array( 'this is english text français bisschen',
-				array( 'sco', 'en', 'fr', 'de' ),
-				array( 'en', 'sco', 'fr', 'de' ),
-				array( array( 'en' ), 0.01 ) ),
+	public function boostedLangData() {
+		return [
+		  [ 'this is english text français bisschen',
+				[ 'sco', 'en', 'fr', 'de' ],
+				[ 'en', 'sco', 'fr', 'de' ],
+				[ [ 'en' ], 0.01 ] ],
 
-		  array( 'this is english text français bisschen',
-				array( 'sco', 'en', 'fr', 'de' ),
-				array( 'en', 'sco', 'de', 'fr' ),
-				array( array( 'en', 'de' ), 0.01 ) ),
+		  [ 'this is english text français bisschen',
+				[ 'sco', 'en', 'fr', 'de' ],
+				[ 'en', 'sco', 'de', 'fr' ],
+				[ [ 'en', 'de' ], 0.01 ] ],
 
-		  array( 'this is english text français bisschen',
-				array( 'sco', 'en', 'fr',  'de' ),
-				array( 'en',  'de', 'sco', 'fr' ),
-				array( array( 'en', 'de' ), 0.02 ) ),
+		  [ 'this is english text français bisschen',
+				[ 'sco', 'en', 'fr',  'de' ],
+				[ 'en',  'de', 'sco', 'fr' ],
+				[ [ 'en', 'de' ], 0.02 ] ],
 
-		  array( 'this is english text français bisschen',
-				array( 'sco', 'en', 'fr',  'de' ),
-				array( 'en',  'fr', 'sco', 'de' ),
-				array( array( 'en', 'fr' ), 0.02 ) ),
+		  [ 'this is english text français bisschen',
+				[ 'sco', 'en', 'fr',  'de' ],
+				[ 'en',  'fr', 'sco', 'de' ],
+				[ [ 'en', 'fr' ], 0.02 ] ],
 
-		  array( 'this is english text français bisschen',
-				array( 'sco', 'en', 'fr', 'de' ),
-				array( 'fr', 'sco', 'en', 'de' ),
-				array( array( 'fr' ), 0.10 ) ),
+		  [ 'this is english text français bisschen',
+				[ 'sco', 'en', 'fr', 'de' ],
+				[ 'fr', 'sco', 'en', 'de' ],
+				[ [ 'fr' ], 0.10 ] ],
 
-		);
+		];
 	}
 
 	/**
@@ -307,9 +292,8 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 	 * @param array $res2
 	 * @param array $boost
 	 */
-	public function testBoostedLangs( $testLine, $res1, $res2, $boost )
-	{
-		$this->multicat1->setBoostedLangs( array() );
+	public function testBoostedLangs( $testLine, $res1, $res2, $boost ) {
+		$this->multicat1->setBoostedLangs( [] );
 		$this->multicat1->setLangBoostScore( 0.0 );
 		$this->assertEquals( array_keys( $this->multicat1->classify( $testLine, $res1 ) ),
 							 array_values( $res1 ) );
@@ -319,20 +303,18 @@ class TextCatTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( array_keys( $this->multicat1->classify( $testLine, $res1 ) ),
 							 array_values( $res2 ) );
 
-		$this->multicat1->setBoostedLangs( array() );
+		$this->multicat1->setBoostedLangs( [] );
 		$this->multicat1->setLangBoostScore( 0.0 );
 	}
 
-	public function testNoMatch()
-	{
+	public function testNoMatch() {
 		# no xxx.lm model exists, so get no match
-		$this->assertEquals( array_keys( $this->testcat->classify( "a string", array( "xxx" ) ) ),
-							 array() );
+		$this->assertEquals( array_keys( $this->testcat->classify( "a string", [ "xxx" ] ) ),
+							 [] );
 		$this->assertEquals( $this->testcat->getResultStatus(), TextCat::STATUSNOMATCH );
 	}
 
-	public function testWordSep()
-	{
+	public function testWordSep() {
 		$this->testcat->setResultsRatio( 1.25 );
 		$this->testcat->setMaxReturnedLanguages( 20 );
 		$normalResults = $this->testcat->classify( "espanol português" );
