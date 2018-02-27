@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__.'/../TextCat.php';
 
 class TextCatTest extends PHPUnit\Framework\TestCase {
 	/**
