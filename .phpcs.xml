@@ -2,7 +2,6 @@
 <ruleset name="textcat">
 	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
 		<exclude name="Generic.PHP.NoSilencedErrors.Discouraged"/>
-		<exclude name="MediaWiki.Commenting.FunctionComment.MissingParamComment"/>
 		<exclude name="MediaWiki.Commenting.MissingCovers.MissingCovers"/>
 	</rule>
 	<file>.</file>
