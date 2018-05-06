@@ -3,7 +3,7 @@
  * Convert data from Perl's TextCat LM format to PHP format
  * used by this tool.
  */
-require_once __DIR__.'/TextCat.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 if($argc != 3) {
 	die("Use $argv[0] INPUTDIR OUTPUTDIR\n");
