@@ -1,6 +1,8 @@
 {
 	"name": "wikimedia/textcat",
 	"description": "PHP port of the TextCat language guesser utility, see http://odur.let.rug.nl/~vannoord/TextCat/.",
+	"license": "LGPL-2.1-only",
+	"homepage": "https://www.mediawiki.org/wiki/TextCat",
 	"authors": [
 		{
 			"name": "Trey Jones",
@@ -11,32 +13,34 @@
 			"email": "smalyshev@wikimedia.org"
 		}
 	],
-	"license": "LGPL-2.1-only",
-	"require": {
-		"php": ">=5.4"
-	},
 	"autoload": {
 		"psr-0": {
 			"TextCat": ""
 		}
 	},
+	"require": {
+		"php": ">=5.5.9"
+	},
 	"require-dev": {
 		"jakub-onderka/php-parallel-lint": "1.0.0",
 		"jakub-onderka/php-console-highlighter": "0.3.2",
 		"mediawiki/mediawiki-codesniffer": "18.0.0",
-		"phpunit/phpunit": "4.8.36 || ^6.5",
-		"mediawiki/minus-x": "0.3.1"
+		"mediawiki/minus-x": "0.3.1",
+		"ockcyp/covers-validator": "0.5.1 || 0.6.1",
+		"phpunit/phpunit": "4.8.36 || ^6.5"
 	},
 	"scripts": {
 		"test": [
 			"parallel-lint . --exclude vendor",
-			"phpunit tests/",
-			"phpcs -p -s",
+			"phpunit",
+			"covers-validator",
+			"phpcs -sp",
 			"minus-x check ."
 		],
+		"cover": "phpunit --coverage-html coverage",
 		"fix": [
-			"phpcbf",
-			"minus-x fix ."
+			"minus-x fix .",
+			"phpcbf"
 		]
 	}
 }
