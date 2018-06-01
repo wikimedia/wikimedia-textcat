@@ -264,7 +264,7 @@ class TextCat {
 	/**
 	 * Classify text.
 	 * @param string $text
-	 * @param string[] $candidates List of candidate languages.
+	 * @param string[]|null $candidates List of candidate languages.
 	 * @return int[] Array with keys of language names and values of score.
 	 * 				 Sorted by ascending score, with first result being the best.
 	 */
