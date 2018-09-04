@@ -10,7 +10,7 @@
 // up your memory limit or set $minFreq >0 in TextCat.php
 // ini_set('memory_limit', '2000000000');
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 // TODO: add option to control model ngram count
 $maxNgrams = 4000;
 

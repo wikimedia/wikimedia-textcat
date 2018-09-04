@@ -9,18 +9,18 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 
 	public function setUp() {
 		// initialize testcat with a string
-		$this->testcat = new TextCat( __DIR__."/data/Models" );
+		$this->testcat = new TextCat( __DIR__ . "/data/Models" );
 
 		// initialize multicats with multi-element arrays
-		$this->multicat1 = new TextCat( [ __DIR__."/../LM", __DIR__."/../LM-query" ] );
-		$this->multicat2 = new TextCat( [ __DIR__."/../LM-query", __DIR__."/../LM" ] );
+		$this->multicat1 = new TextCat( [ __DIR__ . "/../LM", __DIR__ . "/../LM-query" ] );
+		$this->multicat2 = new TextCat( [ __DIR__ . "/../LM-query", __DIR__ . "/../LM" ] );
 
 		// effectively disable RR-based filtering for these cats
 		$this->multicat1->setResultsRatio( 100 );
 		$this->multicat2->setResultsRatio( 100 );
 
 		// initialize ambiguouscat with a one-element array
-		$this->ambiguouscat = new TextCat( [ __DIR__."/../LM-query" ] );
+		$this->ambiguouscat = new TextCat( [ __DIR__ . "/../LM-query" ] );
 	}
 
 	public function testCreateLM() {
@@ -62,8 +62,8 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 	}
 
 	public function getTexts() {
-		$indir = __DIR__."/data/ShortTexts";
-		$outdir = __DIR__."/data/Models";
+		$indir = __DIR__ . "/data/ShortTexts";
+		$outdir = __DIR__ . "/data/Models";
 		$data = [];
 		foreach ( new DirectoryIterator( $indir ) as $file ) {
 			if ( !$file->isFile() || $file->getExtension() != "txt" ) {

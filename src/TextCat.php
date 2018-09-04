@@ -164,7 +164,7 @@ class TextCat {
 	 */
 	public function __construct( $dirs = [] ) {
 		if ( empty( $dirs ) ) {
-			$dirs = [ __DIR__."/LM" ];
+			$dirs = [ __DIR__ . "/LM" ];
 		}
 		if ( !is_array( $dirs ) ) {
 			$dirs = [ $dirs ];

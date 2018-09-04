@@ -2,7 +2,7 @@
 /**
  * Classify texts using ngrams. See help below for options.
  */
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 $options = getopt( 'a:b:B:c:d:f:j:l:m:p:u:w:h' );
 
