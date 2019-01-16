@@ -21,6 +21,9 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 
 		// initialize ambiguouscat with a one-element array
 		$this->ambiguouscat = new TextCat( [ __DIR__ . "/../LM-query" ] );
+
+		// initialize wrongcat with LM models
+		$this->wrongcat = new TextCat( [ __DIR__ . "/../LM" ] );
 	}
 
 	public function testCreateLM() {
@@ -76,8 +79,8 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 
 	/**
 	 * @dataProvider getTexts
-	 * @param string $text
-	 * @param string $lm
+	 * @param string $textFile
+	 * @param string $lmFile
 	 */
 	public function testCreateFromTexts( $textFile, $lmFile ) {
 		include $lmFile;
@@ -89,8 +92,7 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 
 	/**
 	 * @dataProvider getTexts
-	 * @param string $text
-	 * @param string $lm
+	 * @param string $textFile
 	 */
 	public function testFileLines( $textFile ) {
 		$lines = file( $textFile );
@@ -239,8 +241,12 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 	/**
 	 * @dataProvider ambiguityData
 	 * @param string $testLine
-	 * @param array $lang
-	 * @param array $res
+	 * @param float $resRatio
+	 * @param int $maxRetLang
+	 * @param int $modelSize
+	 * @param float $maxProportion
+	 * @param array $results
+	 * @param string $errMsg
 	 */
 	public function testAmbiguity( $testLine, $resRatio, $maxRetLang, $modelSize, $maxProportion,
 								   $results, $errMsg ) {
@@ -323,6 +329,33 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 		$this->testcat->setWordSeparator( 'a-e\s' );
 		$this->assertNotEquals( $this->testcat->classify( "espanol português" ), $normalResults );
 		$this->assertEquals( $this->testcat->classify( "espanol português" ), $weirdResults );
+	}
+
+	public function wrongData() {
+		return [
+		  // test wrong-keyboard input
+		  [ 'пукьфт сгшышту', [ 'en_cyr' ], '' ],
+		  [ '\'qatktdf ,fiyz', [ 'ru_lat' ], '' ],
+
+		  // test wrong-encoding input
+		  [ 'РњРѕСЃРєРІР°', [ 'ru_win1251' ], '' ],
+		];
+	}
+
+	/**
+	 * @dataProvider wrongData
+	 * @param array $results
+	 * @param string $errMsg
+	 */
+	public function testWrongThings( $testLine, $results, $errMsg ) {
+		$this->wrongcat->setMaxNgrams( 6000 );
+		$this->wrongcat->setResultsRatio( 1.02 );
+		$this->wrongcat->setMaxReturnedLanguages( 5 );
+		$this->wrongcat->setMaxProportion( 0.85 );
+
+		$this->assertEquals( array_keys( $this->wrongcat->classify( $testLine ) ),
+							 array_values( $results ) );
+		$this->assertEquals( $this->wrongcat->getResultStatus(), $errMsg );
 	}
 
 }
