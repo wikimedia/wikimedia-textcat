@@ -7,7 +7,7 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 	 */
 	protected $cat;
 
-	public function setUp() {
+	public function setUp() : void {
 		// initialize testcat with a string
 		$this->testcat = new TextCat( __DIR__ . "/data/Models" );
 

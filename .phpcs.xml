@@ -2,7 +2,8 @@
 <ruleset>
 	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
 		<exclude name="Generic.PHP.NoSilencedErrors.Discouraged"/>
-		<exclude name="MediaWiki.Commenting.MissingCovers.MissingCovers"/>
+		<exclude name="MediaWiki.Commenting.MissingCovers.MissingCovers" />
+		<exclude name="PSR12.Properties.ConstantVisibility.NotFound" />
 	</rule>
 	<file>.</file>
 	<arg name="encoding" value="UTF-8"/>
