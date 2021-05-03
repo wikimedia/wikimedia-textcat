@@ -216,11 +216,11 @@ class TextCat {
 		}
 		if ( $this->minFreq ) {
 			$min = $this->minFreq;
-			$ngram = array_filter( $ngram, function ( $v ) use ( $min ) {
+			$ngram = array_filter( $ngram, static function ( $v ) use ( $min ) {
 				return $v > $min;
 			} );
 		}
-		uksort( $ngram, function ( $k1, $k2 ) use ( $ngram ) {
+		uksort( $ngram, static function ( $k1, $k2 ) use ( $ngram ) {
 				if ( $ngram[$k1] == $ngram[$k2] ) {
 					return strcmp( $k1, $k2 );
 				}
@@ -254,7 +254,7 @@ class TextCat {
 		fwrite( $out, '<?php $ngrams = ' . var_export( $ngrams, true ) . ";\n" );
 		// write reduced array as "$ranks"
 		$rank = 1;
-		$ranks = array_map( function ( $x ) use ( &$rank ) {
+		$ranks = array_map( static function ( $x ) use ( &$rank ) {
 			return $rank++;
 		}, $ngrams );
 		fwrite( $out, '$ranks = ' . var_export( $ranks, true ) . ";\n" );
@@ -307,7 +307,7 @@ class TextCat {
 
 		// ignore any item that scores higher than best * resultsRatio
 		$max = reset( $results ) * $this->resultsRatio;
-		$results = array_filter( $results, function ( $res ) use ( $max ) {
+		$results = array_filter( $results, static function ( $res ) use ( $max ) {
 			return $res <= $max;
 		} );
 
@@ -319,7 +319,7 @@ class TextCat {
 
 		// filter max proportion of max score after ambiguity check; reuse $max variable
 		$max = count( $inputgrams ) * $this->maxNgrams * $this->maxProportion;
-		$results = array_filter( $results, function ( $res ) use ( $max ) {
+		$results = array_filter( $results, static function ( $res ) use ( $max ) {
 			return $res <= $max;
 		} );
 
