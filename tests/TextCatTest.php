@@ -173,7 +173,7 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 		$this->assertEquals( array_keys( $this->testcat->classify( $testLine, $res ) ),
 							 array_values( $res ) );
 		if ( !empty( $res ) ) {
-			$this->assertEquals( $this->testcat->getResultStatus(), '' );
+			$this->assertSame( '', $this->testcat->getResultStatus() );
 		}
 
 		// should get no results when min input len is more than the length of the string
