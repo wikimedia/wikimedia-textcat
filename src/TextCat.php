@@ -239,6 +239,7 @@ class TextCat {
 	 */
 	public function loadLanguageFile( $langFile ) {
 		include $langFile;
+		// @phan-suppress-next-line PhanTypeMismatchArgumentInternal $ranks is brought in by the include
 		array_splice( $ranks, $this->maxNgrams );
 		return $ranks;
 	}
