@@ -178,9 +178,9 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 
 		// should get no results when min input len is more than the length of the string
 		$this->testcat->setMinInputLength( mb_strlen( $testLine ) + 1 );
-		$this->assertEquals( array_keys( $this->testcat->classify( $testLine, $res ) ),
-							 [] );
-		$this->assertEquals( $this->testcat->getResultStatus(), TextCat::STATUSTOOSHORT );
+		$this->assertEquals( [],
+							 array_keys( $this->testcat->classify( $testLine, $res ) ) );
+		$this->assertEquals( TextCat::STATUSTOOSHORT, $this->testcat->getResultStatus() );
 
 		// reset to defaults
 		$this->testcat->setMinInputLength( 0 );
@@ -314,9 +314,9 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 
 	public function testNoMatch() {
 		# no xxx.lm model exists, so get no match
-		$this->assertEquals( array_keys( $this->testcat->classify( "a string", [ "xxx" ] ) ),
-							 [] );
-		$this->assertEquals( $this->testcat->getResultStatus(), TextCat::STATUSNOMATCH );
+		$this->assertEquals( [],
+							 array_keys( $this->testcat->classify( "a string", [ "xxx" ] ) ) );
+		$this->assertEquals( TextCat::STATUSNOMATCH, $this->testcat->getResultStatus() );
 	}
 
 	public function testWordSep() {
