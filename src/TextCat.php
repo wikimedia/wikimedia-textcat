@@ -163,7 +163,7 @@ class TextCat {
 	 * @param string|array $dirs
 	 */
 	public function __construct( $dirs = [] ) {
-		if ( empty( $dirs ) ) {
+		if ( !$dirs ) {
 			$dirs = [ dirname( __DIR__ ) . "/LM" ];
 		}
 		if ( !is_array( $dirs ) ) {
@@ -192,7 +192,7 @@ class TextCat {
 	public function createLM( $text, $maxNgrams ) {
 		$ngram = [];
 		foreach ( preg_split( "/[{$this->wordSeparator}]+/u", $text ) as $word ) {
-			if ( empty( $word ) ) {
+			if ( !$word ) {
 				continue;
 			}
 			$word = "_" . $word . "_";
