@@ -221,10 +221,10 @@ class TextCat {
 			} );
 		}
 		uksort( $ngram, static function ( $k1, $k2 ) use ( $ngram ) {
-				if ( $ngram[$k1] == $ngram[$k2] ) {
-					return strcmp( $k1, $k2 );
-				}
-				return $ngram[$k2] - $ngram[$k1];
+			if ( $ngram[$k1] == $ngram[$k2] ) {
+				return strcmp( $k1, $k2 );
+			}
+			return $ngram[$k2] - $ngram[$k1];
 		} );
 		if ( count( $ngram ) > $maxNgrams ) {
 			array_splice( $ngram, $maxNgrams );

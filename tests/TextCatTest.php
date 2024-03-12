@@ -109,8 +109,8 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 	public function multiCatData() {
 		return [
 		  [ 'this is english text français bisschen',
-				[ 'sco', 'en', 'fr',  'de' ],
-				[ 'fr',  'de', 'sco', 'en' ], ],
+				[ 'sco', 'en', 'fr', 'de' ],
+				[ 'fr', 'de', 'sco', 'en' ], ],
 		  [ 'الاسم العلمي: Felis catu',
 				[ 'ar', 'la', 'fa', 'fr' ],
 				[ 'ar', 'fr', 'la', 'fa' ], ],
@@ -192,18 +192,18 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 		  // check effects of results ratio and max returned langs
 		  [ 'espanol português', 1.05, 10, 3000, 1.00, [ 'pt' ], '' ],
 		  [ 'espanol português', 1.20, 10, 3000, 1.00, [ 'pt', 'es' ], '' ],
-		  [ 'espanol português', 1.20,  2, 3000, 1.00, [ 'pt', 'es' ], '' ],
-		  [ 'espanol português', 1.20,  1, 3000, 1.00, [], TextCat::STATUSAMBIGUOUS ],
+		  [ 'espanol português', 1.20, 2, 3000, 1.00, [ 'pt', 'es' ], '' ],
+		  [ 'espanol português', 1.20, 1, 3000, 1.00, [], TextCat::STATUSAMBIGUOUS ],
 		  [ 'espanol português', 1.30, 10, 3000, 1.00,
 				[ 'pt', 'es', 'fr', 'it', 'en', 'pl' ], '' ],
-		  [ 'espanol português', 1.30,  6, 3000, 1.00,
+		  [ 'espanol português', 1.30, 6, 3000, 1.00,
 				 [ 'pt', 'es', 'fr', 'it', 'en', 'pl' ], '' ],
-		  [ 'espanol português', 1.30,  5, 3000, 1.00, [], TextCat::STATUSAMBIGUOUS ],
+		  [ 'espanol português', 1.30, 5, 3000, 1.00, [], TextCat::STATUSAMBIGUOUS ],
 
 		  // check effects of model size
-		  [ 'espanol português', 1.10, 20,  500, 1.00,
+		  [ 'espanol português', 1.10, 20, 500, 1.00,
 				 [ 'pt', 'es', 'it', 'fr', 'pl', 'cs', 'en', 'sv', 'de', 'id', 'nl' ], '' ],
-		  [ 'espanol português', 1.10, 20,  700, 1.00,
+		  [ 'espanol português', 1.10, 20, 700, 1.00,
 				 [ 'pt', 'es', 'it', 'fr', 'en', 'de' ], '' ],
 		  [ 'espanol português', 1.10, 20, 1000, 1.00, [ 'pt', 'es', 'it', 'fr' ], '' ],
 		  [ 'espanol português', 1.10, 20, 2000, 1.00, [ 'pt', 'es' ], '' ],
@@ -273,13 +273,13 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 				[ [ 'en', 'de' ], 0.01 ] ],
 
 		  [ 'this is english text français bisschen',
-				[ 'sco', 'en', 'fr',  'de' ],
-				[ 'en',  'de', 'sco', 'fr' ],
+				[ 'sco', 'en', 'fr', 'de' ],
+				[ 'en', 'de', 'sco', 'fr' ],
 				[ [ 'en', 'de' ], 0.02 ] ],
 
 		  [ 'this is english text français bisschen',
-				[ 'sco', 'en', 'fr',  'de' ],
-				[ 'en',  'fr', 'sco', 'de' ],
+				[ 'sco', 'en', 'fr', 'de' ],
+				[ 'en', 'fr', 'sco', 'de' ],
 				[ [ 'en', 'fr' ], 0.02 ] ],
 
 		  [ 'this is english text français bisschen',
