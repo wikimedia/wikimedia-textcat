@@ -1,11 +1,12 @@
 <?php
 
 class TextCatTest extends PHPUnit\Framework\TestCase {
-	/**
-	 * TextCat instance
-	 * @var TextCat
-	 */
-	protected $cat;
+
+	private TextCat $testcat;
+	private TextCat $multicat1;
+	private TextCat $multicat2;
+	private TextCat $ambiguouscat;
+	private TextCat $wrongcat;
 
 	public function setUp(): void {
 		// initialize testcat with a string
