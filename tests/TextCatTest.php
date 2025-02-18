@@ -348,6 +348,7 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 
 	/**
 	 * @dataProvider wrongData
+	 * @param string $testLine
 	 * @param array $results
 	 * @param string $errMsg
 	 */

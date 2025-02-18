@@ -2,8 +2,6 @@
 <ruleset>
 	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
 		<exclude name="Generic.PHP.NoSilencedErrors.Discouraged" />
-		<exclude name="MediaWiki.Commenting.FunctionComment.MissingParamTag" />
-		<exclude name="MediaWiki.Commenting.FunctionComment.ParamNameNoMatch" />
 		<exclude name="PSR12.Properties.ConstantVisibility.NotFound" />
 	</rule>
 	<file>.</file>
