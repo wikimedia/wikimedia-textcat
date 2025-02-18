@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @covers \TextCat
+ */
 class TextCatTest extends PHPUnit\Framework\TestCase {
 
 	private TextCat $testcat;
