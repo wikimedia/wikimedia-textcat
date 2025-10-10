@@ -68,7 +68,7 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 		$this->assertEquals( $result, $lm );
 	}
 
-	public function getTexts() {
+	public static function getTexts() {
 		$indir = __DIR__ . "/data/ShortTexts";
 		$outdir = __DIR__ . "/data/Models";
 		$data = [];
@@ -110,7 +110,7 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 		$this->assertEquals( basename( $textFile, ".txt" ), key( $detect ) );
 	}
 
-	public function multiCatData() {
+	public static function multiCatData() {
 		return [
 		  [ 'this is english text français bisschen',
 				[ 'sco', 'en', 'fr', 'de' ],
@@ -143,7 +143,7 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 							 array_values( $res2 ) );
 	}
 
-	public function minInputLengthData() {
+	public static function minInputLengthData() {
 		return [
 		  [ 'eso es español',
 				[ 'spanish', 'catalan', 'portuguese' ], null, ],
@@ -191,7 +191,7 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 		$this->testcat->setResultsRatio( 1.05 );
 	}
 
-	public function ambiguityData() {
+	public static function ambiguityData() {
 		return [
 		  // check effects of results ratio and max returned langs
 		  [ 'espanol português', 1.05, 10, 3000, 1.00, [ 'pt' ], '' ],
@@ -264,7 +264,7 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 		$this->assertEquals( $this->ambiguouscat->getResultStatus(), $errMsg );
 	}
 
-	public function boostedLangData() {
+	public static function boostedLangData() {
 		return [
 		  [ 'this is english text français bisschen',
 				[ 'sco', 'en', 'fr', 'de' ],
@@ -335,7 +335,7 @@ class TextCatTest extends PHPUnit\Framework\TestCase {
 		$this->assertEquals( $this->testcat->classify( "espanol português" ), $weirdResults );
 	}
 
-	public function wrongData() {
+	public static function wrongData() {
 		return [
 		  // test wrong-keyboard input
 		  [ 'пукьфт сгшышту', [ 'en_cyr' ], '' ],
