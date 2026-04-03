@@ -1,4 +1,6 @@
 <?php
+declare( strict_types = 1 );
+
 /**
  * Convert data from Perl's TextCat LM format to PHP format
  * used by this tool.

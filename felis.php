@@ -1,4 +1,6 @@
 <?php
+declare( strict_types = 1 );
+
 /**
  * Generate ngrams data from text files.
  * Run: php felis.php INPUTDIR OUTPUTDIR

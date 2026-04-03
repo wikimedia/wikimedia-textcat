@@ -5,6 +5,7 @@
 		<exclude name="MediaWiki.Commenting.PhpunitAnnotations.WrongDataProviderName" />
 		<exclude name="PSR12.Properties.ConstantVisibility.NotFound" />
 	</rule>
+	<rule ref="Generic.PHP.RequireStrictTypes" />
 	<file>.</file>
 	<arg name="encoding" value="UTF-8"/>
 	<arg name="extensions" value="php"/>
